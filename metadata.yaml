@@ -1,5 +1,5 @@
 homepage: 'https://stape.io/'
 documentation: 'https://github.com/stape-io/meta-custom-audiences-tag'
 versions:
-  - sha: 48e0aa98639d4c69fa5409883f4059f5077d3128
+  - sha: 34f190536fde54615baf607f9bd1cdee1e2a3e8d
     changeNotes: Initial release.
