@@ -21,7 +21,7 @@ This tag supports three primary actions:
 - **Action**: Choose the operation to perform.
 - **Destination Audiences**: (For `Add`/`Remove` actions) A list of Audience IDs and their corresponding Access Tokens.
 - **Destination Ad Accounts**: (For `Remove from All` action) A list of Ad Account IDs and their corresponding Access Tokens.
-- **Access Token**: A System User access token with the `ads_management` permission. This token must be associated with the Ad Account that owns the audience. You can find more details on how to generate on the [Generating a System User Access Token section](https://github.com/stape-io/meta-custom-audiences-tag?tab=readme-ov-file#generating-a-system-user-access-token).
+- **Access Token**: A System User access token with the `ads_management` permission. This token must be associated with the Ad Account that owns the audience. You can find more details on how to generate on the [Generating a System User Access Token section](#generating-a-system-user-access-token).
 
 ### Audience Members
 The tag can be configured to send data for a single user or for multiple users at once.
