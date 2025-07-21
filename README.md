@@ -54,6 +54,18 @@ This tag requires a long-lived System User access token for server-to-server aut
 
 ❗ You must have **Admin** access to that Business Manager.
 
+> ⚠️ Meta enforces rate limits on API calls. Make sure your usage stays within these limits to avoid errors.
+>
+>  - For apps with **Standard Access** to the Ads Management Standard Access:
+>    - This is the default access level when you create a new app.
+>    - The rate limit is: `5000 + 40 * Number of Active Custom Audiences` per hour.
+>  - For apps with **Advanced Access** to the Ads Management Standard Access feature the limit is:,
+>    - You must apply the [app for a review](https://developers.facebook.com/docs/marketing-api/get-started/authorization#permissions-and-features) to obtain this access level.
+>    - The rate limit increases to: `190000 + 40 * Number of Active Custom Audiences` per hour.
+>
+> Learn more: [Rate Limiting](https://developers.facebook.com/docs/marketing-api/overview/rate-limiting) and [Rate Limiting for Custom Audiences](https://developers.facebook.com/docs/graph-api/overview/rate-limiting#custom-audience).
+
+
 ### Part 1: Create a Meta App
 
 A Meta App is required to grant your system the correct permissions.

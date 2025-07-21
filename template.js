@@ -178,6 +178,14 @@ function validateMappedData(mappedData) {
   }
 }
 
+function getDestinations(data) {
+  const authFlow = data.authFlow === 'own';
+  const audiencesList = authFlow ? data.ownAuthAudiencesList : data.stapeAuthAudiencesList;
+  const adAccountsList = authFlow ? data.ownAuthAdAccountsList : data.stapeAuthAdAccountsList;
+
+  return data.audienceAction === 'removeFromAll' ? adAccountsList : audiencesList;
+}
+
 function generateRequestUrl(data, config) {
   const apiVersion = '23.0';
   const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
@@ -217,8 +225,7 @@ function generateRequestOptions(data) {
 }
 
 function sendRequests(data, mappedData) {
-  const destinations =
-    data.audienceAction === 'removeFromAll' ? data.adAccountsList : data.audiencesList;
+  const destinations = getDestinations(data);
   const requestOptions = generateRequestOptions(data);
 
   const requests = destinations.map((d) => {

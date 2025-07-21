@@ -56,110 +56,140 @@ ___TEMPLATE_PARAMETERS___
     "simpleValueType": true
   },
   {
+    "type": "RADIO",
+    "name": "authFlow",
+    "displayName": "Authentication Type",
+    "radioItems": [
+      {
+        "value": "own",
+        "displayValue": "Own Meta Credentials",
+        "help": "This type of auth is more complicated. It uses a combination of Meta App and System User to generate an Access Token.\n\u003cbr/\u003e\n⚠️ Meta enforces rate limits on API calls. Make sure your usage stays within these limits to avoid errors.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag?tab\u003dreadme-ov-file#generating-a-system-user-access-token\"\u003eLearn more\u003c/a\u003e.",
+        "subParams": []
+      }
+    ],
+    "simpleValueType": true,
+    "defaultValue": "own"
+  },
+  {
     "type": "GROUP",
     "name": "destinationsGroup",
     "subParams": [
       {
-        "type": "SIMPLE_TABLE",
-        "name": "audiencesList",
-        "displayName": "Destination Audiences",
-        "simpleTableColumns": [
+        "type": "GROUP",
+        "name": "ownAuthDestinationsGroup",
+        "displayName": "",
+        "groupStyle": "NO_ZIPPY",
+        "subParams": [
           {
-            "defaultValue": "",
-            "displayName": "Audience ID",
-            "name": "audienceId",
-            "type": "TEXT",
-            "valueValidators": [
+            "type": "SIMPLE_TABLE",
+            "name": "ownAuthAudiencesList",
+            "displayName": "Destination Audiences",
+            "simpleTableColumns": [
               {
-                "type": "NON_EMPTY"
+                "defaultValue": "",
+                "displayName": "Audience ID",
+                "name": "audienceId",
+                "type": "TEXT",
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  },
+                  {
+                    "type": "POSITIVE_NUMBER"
+                  }
+                ],
+                "valueHint": "1234567890",
+                "isUnique": true
               },
               {
-                "type": "POSITIVE_NUMBER"
+                "defaultValue": "",
+                "displayName": "Access Token",
+                "name": "accessToken",
+                "type": "TEXT",
+                "valueHint": "EAAABCZCAnqewBPME6S...",
+                "isUnique": false,
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  }
+                ]
               }
             ],
-            "valueHint": "1234567890",
-            "isUnique": true
-          },
-          {
-            "defaultValue": "",
-            "displayName": "Access Token",
-            "name": "accessToken",
-            "type": "TEXT",
-            "valueHint": "EAAABCZCAnqewBPME6S...",
-            "isUnique": false,
             "valueValidators": [
               {
                 "type": "NON_EMPTY"
+              }
+            ],
+            "newRowButtonText": "Add Audience",
+            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \u003cli\u003eA Meta App: \u003cul\u003e \u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \u003cli\u003eSet as an \u003ci\u003eApp Type\u003c/i\u003e of \u003ci\u003eBusiness\u003c/i\u003e\u003c/li\u003e \u003cli\u003eConfigured for the \u003ci\u003eMarketing API\u003c/i\u003e product\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag?tab\u003dreadme-ov-file#generating-a-system-user-access-token\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.",
+            "enablingConditions": [
+              {
+                "paramName": "audienceAction",
+                "paramValue": "ingest",
+                "type": "EQUALS"
+              },
+              {
+                "paramName": "audienceAction",
+                "paramValue": "remove",
+                "type": "EQUALS"
+              }
+            ]
+          },
+          {
+            "type": "SIMPLE_TABLE",
+            "name": "ownAuthAdAccountsList",
+            "displayName": "Destination Ad Accounts",
+            "simpleTableColumns": [
+              {
+                "defaultValue": "",
+                "displayName": "Ad Account ID",
+                "name": "adAccountId",
+                "type": "TEXT",
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  },
+                  {
+                    "type": "POSITIVE_NUMBER"
+                  }
+                ],
+                "valueHint": "1234567890",
+                "isUnique": true
+              },
+              {
+                "defaultValue": "",
+                "displayName": "Access Token",
+                "name": "accessToken",
+                "type": "TEXT",
+                "valueHint": "EAAABCZCAnqewBPME6S...",
+                "isUnique": false,
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  }
+                ]
+              }
+            ],
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ],
+            "newRowButtonText": "Add Ad Account",
+            "help": "\u003cb\u003eAd Account ID\u003c/b\u003e: The ID of the ad account where the audiences you want to interact with reside. You can find this within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \u003cli\u003eA Meta App: \u003cul\u003e \u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \u003cli\u003eSet as an \u003ci\u003eApp Type\u003c/i\u003e of \u003ci\u003eBusiness\u003c/i\u003e\u003c/li\u003e \u003cli\u003eConfigured for the \u003ci\u003eMarketing API\u003c/i\u003e product\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag?tab\u003dreadme-ov-file#generating-a-system-user-access-token\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.",
+            "enablingConditions": [
+              {
+                "paramName": "audienceAction",
+                "paramValue": "removeFromAll",
+                "type": "EQUALS"
               }
             ]
           }
         ],
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY"
-          }
-        ],
-        "newRowButtonText": "Add Audience",
-        "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \u003cli\u003eA Meta App: \u003cul\u003e \u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \u003cli\u003eSet as an \u003ci\u003eApp Type\u003c/i\u003e of \u003ci\u003eBusiness\u003c/i\u003e\u003c/li\u003e \u003cli\u003eConfigured for the \u003ci\u003eMarketing API\u003c/i\u003e product\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag?tab\u003dreadme-ov-file#generating-a-system-user-access-token\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.",
         "enablingConditions": [
           {
-            "paramName": "audienceAction",
-            "paramValue": "ingest",
-            "type": "EQUALS"
-          },
-          {
-            "paramName": "audienceAction",
-            "paramValue": "remove",
-            "type": "EQUALS"
-          }
-        ]
-      },
-      {
-        "type": "SIMPLE_TABLE",
-        "name": "adAccountsList",
-        "displayName": "Destination Ad Accounts",
-        "simpleTableColumns": [
-          {
-            "defaultValue": "",
-            "displayName": "Ad Account ID",
-            "name": "adAccountId",
-            "type": "TEXT",
-            "valueValidators": [
-              {
-                "type": "NON_EMPTY"
-              },
-              {
-                "type": "POSITIVE_NUMBER"
-              }
-            ],
-            "valueHint": "1234567890",
-            "isUnique": true
-          },
-          {
-            "defaultValue": "",
-            "displayName": "Access Token",
-            "name": "accessToken",
-            "type": "TEXT",
-            "valueHint": "EAAABCZCAnqewBPME6S...",
-            "isUnique": false,
-            "valueValidators": [
-              {
-                "type": "NON_EMPTY"
-              }
-            ]
-          }
-        ],
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY"
-          }
-        ],
-        "newRowButtonText": "Add Ad Account",
-        "help": "\u003cb\u003eAd Account ID\u003c/b\u003e: The ID of the ad account where the audiences you want to interact with reside. You can find this within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \u003cli\u003eA Meta App: \u003cul\u003e \u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \u003cli\u003eSet as an \u003ci\u003eApp Type\u003c/i\u003e of \u003ci\u003eBusiness\u003c/i\u003e\u003c/li\u003e \u003cli\u003eConfigured for the \u003ci\u003eMarketing API\u003c/i\u003e product\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag?tab\u003dreadme-ov-file#generating-a-system-user-access-token\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.",
-        "enablingConditions": [
-          {
-            "paramName": "audienceAction",
-            "paramValue": "removeFromAll",
+            "paramName": "authFlow",
+            "paramValue": "own",
             "type": "EQUALS"
           }
         ]
@@ -737,6 +767,14 @@ function validateMappedData(mappedData) {
   }
 }
 
+function getDestinations(data) {
+  const authFlow = data.authFlow === 'own';
+  const audiencesList = authFlow ? data.ownAuthAudiencesList : data.stapeAuthAudiencesList;
+  const adAccountsList = authFlow ? data.ownAuthAdAccountsList : data.stapeAuthAdAccountsList;
+
+  return data.audienceAction === 'removeFromAll' ? adAccountsList : audiencesList;
+}
+
 function generateRequestUrl(data, config) {
   const apiVersion = '23.0';
   const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
@@ -776,8 +814,7 @@ function generateRequestOptions(data) {
 }
 
 function sendRequests(data, mappedData) {
-  const destinations =
-    data.audienceAction === 'removeFromAll' ? data.adAccountsList : data.audiencesList;
+  const destinations = getDestinations(data);
   const requestOptions = generateRequestOptions(data);
 
   const requests = destinations.map((d) => {
@@ -1327,28 +1364,30 @@ scenarios:
     assertApi('gtmOnFailure').wasCalled();
 - name: '[Ingest] Request URL, Request Options and Request Body are succesfully built
     and sent'
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'single'\n});\n\nmockData.audiencesList.push({\n\
+  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'single'\n});\n\nmockData.ownAuthAudiencesList.push({\n\
     \  audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
     });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
     \ requestBody) => {\n  assertThat(requestUrl).isEqualTo(\n    'https://graph.facebook.com/v'\
-    \ + apiVersion + '/' + mockData.audiencesList[requestCount].audienceId + '/users?access_token='\
-    \ + mockData.audiencesList[requestCount].accessToken\n  );\n\n  assertThat(requestOptions).isEqualTo({\n\
-    \    method: 'POST',\n    headers: { 'Content-Type': 'application/json' }\n  });\n\
-    \  \n  const parsedRequestBody = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
+    \ + apiVersion + '/' + mockData.ownAuthAudiencesList[requestCount].audienceId\
+    \ + '/users?access_token=' + mockData.ownAuthAudiencesList[requestCount].accessToken\n\
+    \  );\n\n  assertThat(requestOptions).isEqualTo({\n    method: 'POST',\n    headers:\
+    \ { 'Content-Type': 'application/json' }\n  });\n  \n  const parsedRequestBody\
+    \ = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
     \  \n  requestCount++;\n  \n  return Promise.create((resolve, reject) => {\n \
     \   resolve({ statusCode: 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(()\
     \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
     });"
 - name: '[Remove] Request URL, Request Options and Request Body are succesfully built
     and sent'
-  code: "setMockDataByAudienceMethod('remove', {\n  userMode: 'single'\n});\n\nmockData.audiencesList.push({\n\
+  code: "setMockDataByAudienceMethod('remove', {\n  userMode: 'single'\n});\n\nmockData.ownAuthAudiencesList.push({\n\
     \  audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
     });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
     \ requestBody) => {\n  assertThat(requestUrl).isEqualTo(\n    'https://graph.facebook.com/v'\
-    \ + apiVersion + '/' + mockData.audiencesList[requestCount].audienceId + '/users?access_token='\
-    \ + mockData.audiencesList[requestCount].accessToken\n  );\n\n  assertThat(requestOptions).isEqualTo({\n\
-    \    method: 'DELETE',\n    headers: { 'Content-Type': 'application/json' }\n\
-    \  });\n  \n  const parsedRequestBody = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
+    \ + apiVersion + '/' + mockData.ownAuthAudiencesList[requestCount].audienceId\
+    \ + '/users?access_token=' + mockData.ownAuthAudiencesList[requestCount].accessToken\n\
+    \  );\n\n  assertThat(requestOptions).isEqualTo({\n    method: 'DELETE',\n   \
+    \ headers: { 'Content-Type': 'application/json' }\n  });\n  \n  const parsedRequestBody\
+    \ = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
     \  \n  requestCount++;\n  \n  return Promise.create((resolve, reject) => {\n \
     \   resolve({ statusCode: 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(()\
     \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
@@ -1356,11 +1395,11 @@ scenarios:
 - name: '[Remove from All] Request URL, Request Options and Request Body are succesfully
     built and sent'
   code: "setMockDataByAudienceMethod('removeFromAll', {\n  userMode: 'single'\n});\n\
-    \nmockData.adAccountsList.push({\n  adAccountId: 'expectedAdAccountId2',\n  accessToken:\
-    \ 'expectedAccessToken2'\n});\n\nlet requestCount = 0;\nmock('sendHttpRequest',\
+    \nmockData.ownAuthAdAccountsList.push({\n  adAccountId: 'expectedAdAccountId2',\n\
+    \  accessToken: 'expectedAccessToken2'\n});\n\nlet requestCount = 0;\nmock('sendHttpRequest',\
     \ (requestUrl, requestOptions, requestBody) => {\n  assertThat(requestUrl).isEqualTo(\n\
-    \    'https://graph.facebook.com/v' + apiVersion + '/act_' + mockData.adAccountsList[requestCount].adAccountId\
-    \ + '/usersofanyaudience?access_token=' + mockData.adAccountsList[requestCount].accessToken\n\
+    \    'https://graph.facebook.com/v' + apiVersion + '/act_' + mockData.ownAuthAdAccountsList[requestCount].adAccountId\
+    \ + '/usersofanyaudience?access_token=' + mockData.ownAuthAdAccountsList[requestCount].accessToken\n\
     \  );\n\n  assertThat(requestOptions).isEqualTo({\n    method: 'DELETE',\n   \
     \ headers: { 'Content-Type': 'application/json' }\n  });\n  \n  const parsedRequestBody\
     \ = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
@@ -1425,18 +1464,19 @@ scenarios:
     \  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
     });"
 - name: gtmOnFailure handler is called if some response fails with status code
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'single'\n});\n\nmockData.audiencesList.push({\n\
+  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'single'\n});\n\nmockData.ownAuthAudiencesList.push({\n\
     \  audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
     });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
     \ requestBody) => {\n  requestCount++;\n  return Promise.create((resolve, reject)\
-    \ => {\n    resolve({ statusCode: (requestCount === mockData.audiencesList.length\
+    \ => {\n    resolve({ statusCode: (requestCount === mockData.ownAuthAudiencesList.length\
     \ - 1) ? 500 : 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() =>\
     \ {\n  assertApi('gtmOnSuccess').wasNotCalled();\n  assertApi('gtmOnFailure').wasCalled();\n\
     });"
 - name: gtmOnFailure handler is called if some response rejects
   code: "// Currently not possible to test it. \n// GTM Testing Suite keeps saying\
     \ that there was an \"Unhandled rejection - {\"reason\":\"failed\"}\", even though\
-    \ a .catch block as capturing the rejection.\n\n/*\nsetMockDataByAudienceMethod('ingest',\
+    \ a .catch block is capturing the rejection. In real tests the code handles it\
+    \ succesfully. There are no problems.\n\n/*\nsetMockDataByAudienceMethod('ingest',\
     \ {\n  userMode: 'single'\n});\n\nmockData.audiencesList.push({\n  audienceId:\
     \ 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n});\n\nlet requestCount\
     \ = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => {\n\
@@ -1583,21 +1623,21 @@ setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\ncons
   \ It's here to make testing easier.\n    multipleUsersSchema: ['EMAIL', 'PHONE'],\n\
   \    multipleUsersAudienceMembers: [['test', 'test'], ['test', 'test']],\n    \n\
   \    adStorageConsent: 'optional',\n    logType: 'debug',\n    bigQueryLogType:\
-  \ 'no',\n  };\n  \n  const methods = {\n    ingest: {\n      audienceAction: 'ingest',\n\
-  \      audiencesList: [\n        {\n          audienceId: 'expectedAudienceId',\n\
+  \ 'no',\n  };\n  \n  const methods = {\n    ingest: {\n      authFlow: 'own',\n\
+  \      audienceAction: 'ingest',\n      ownAuthAudiencesList: [\n        {\n   \
+  \       audienceId: 'expectedAudienceId',\n          accessToken:\n            'expectedAccessToken'\n\
+  \        }\n      ]\n    },\n    remove: {\n      authFlow: 'own',\n      audienceAction:\
+  \ 'remove',\n      ownAuthAudiencesList: [\n        {\n          audienceId: 'expectedAudienceId',\n\
   \          accessToken:\n            'expectedAccessToken'\n        }\n      ]\n\
-  \    },\n    remove: {\n      audienceAction: 'remove',\n      audiencesList: [\n\
-  \        {\n          audienceId: 'expectedAudienceId',\n          accessToken:\n\
-  \            'expectedAccessToken'\n        }\n      ]\n    },\n    removeFromAll:\
-  \ {\n      audienceAction: 'removeFromAll',\n      adAccountsList: [\n        {\n\
-  \          adAccountId: 'expectedAdAccountId',\n          accessToken: 'expectedAccessToken'\n\
-  \        }\n      ]\n    }\n  };\n  \n  return mergeObj(\n    mockData, \n    mergeObj(\n\
-  \      methods[method], \n      mergeObj(baseMockData, objToBeMerged || {})\n  \
-  \  )\n  );\n};\n\nconst setGetAllEventData = (objToBeMerged) => {\n  mock('getAllEventData',\
-  \ mergeObj({\n    'x-ga-protocol_version': '2',\n    'x-ga-measurement_id': 'G-123ABC',\n\
-  \    'x-ga-gtm_version': '45je55e1za200',\n    'x-ga-page_id': 1747422523211,\n\
-  \    'x-ga-gcd': '13l3l3l3l1l1',\n    'x-ga-npa': '0',\n    'x-ga-dma': '0',\n \
-  \   'x-ga-mp2-tag_exp':\n      '101509157~103116025~103130498~103130500~103136993~103136995~103200001~103207802~103211513~103233427~103252644~103252646~103263073~103301114~103301116',\n\
+  \    },\n    removeFromAll: {\n      authFlow: 'own',\n      audienceAction: 'removeFromAll',\n\
+  \      ownAuthAdAccountsList: [\n        {\n          adAccountId: 'expectedAdAccountId',\n\
+  \          accessToken: 'expectedAccessToken'\n        }\n      ]\n    }\n  };\n\
+  \  \n  return mergeObj(\n    mockData, \n    mergeObj(\n      methods[method], \n\
+  \      mergeObj(baseMockData, objToBeMerged || {})\n    )\n  );\n};\n\nconst setGetAllEventData\
+  \ = (objToBeMerged) => {\n  mock('getAllEventData', mergeObj({\n    'x-ga-protocol_version':\
+  \ '2',\n    'x-ga-measurement_id': 'G-123ABC',\n    'x-ga-gtm_version': '45je55e1za200',\n\
+  \    'x-ga-page_id': 1747422523211,\n    'x-ga-gcd': '13l3l3l3l1l1',\n    'x-ga-npa':\
+  \ '0',\n    'x-ga-dma': '0',\n    'x-ga-mp2-tag_exp':\n      '101509157~103116025~103130498~103130500~103136993~103136995~103200001~103207802~103211513~103233427~103252644~103252646~103263073~103301114~103301116',\n\
   \    client_id: 'AUJctU7H7hBB/aMuhE4pKwGu5DWDdklg5abyyyn8i/I=.1747154479',\n   \
   \ 'x-ga-ecid': '1294673677',\n    language: 'en-us',\n    screen_resolution: '1512x982',\n\
   \    event_location: { country: 'BR', region: 'SP' },\n    event_id: '101509157~103116025~103130498',\n\
