@@ -1473,18 +1473,28 @@ scenarios:
     \ {\n  assertApi('gtmOnSuccess').wasNotCalled();\n  assertApi('gtmOnFailure').wasCalled();\n\
     });"
 - name: gtmOnFailure handler is called if some response rejects
-  code: "// Currently not possible to test it. \n// GTM Testing Suite keeps saying\
-    \ that there was an \"Unhandled rejection - {\"reason\":\"failed\"}\", even though\
-    \ a .catch block is capturing the rejection. In real tests the code handles it\
-    \ succesfully. There are no problems.\n\n/*\nsetMockDataByAudienceMethod('ingest',\
-    \ {\n  userMode: 'single'\n});\n\nmockData.audiencesList.push({\n  audienceId:\
-    \ 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n});\n\nlet requestCount\
-    \ = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => {\n\
-    \  const returnPromise = Promise.create((resolve, reject) => {\n    (requestCount\
-    \ === mockData.audiencesList.length - 1) ? reject({ reason: 'failed' }) : resolve({\
-    \ statusCode: 200 });\n  });\n  requestCount++;\n  return returnPromise;\n});\n\
-    \nrunCode(mockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasNotCalled();\n\
-    \  assertApi('gtmOnFailure').wasCalled();\n});\n*/"
+  code: |-
+    setMockDataByAudienceMethod('ingest', {
+      userMode: 'single'
+    });
+
+    mockData.ownAuthAudiencesList.push({
+      audienceId: 'expectedAudienceId2',
+      accessToken: 'expectedAccessToken2'
+    });
+
+    mock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => { });
+
+    mockObject('Promise', {
+      all: () => Promise.create((resolve, reject) => reject({ reason: 'failed' }))
+    });
+
+    runCode(mockData);
+
+    callLater(() => {
+      assertApi('gtmOnSuccess').wasNotCalled();
+      assertApi('gtmOnFailure').wasCalled();
+    });
 - name: Should log to console, if the 'Always log to console' option is selected
   code: |-
     setMockDataByAudienceMethod('ingest');
