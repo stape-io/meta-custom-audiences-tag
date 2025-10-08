@@ -1,3 +1,5 @@
+/// <reference path="./server-gtm-sandboxed-apis.d.ts" />
+
 const BigQuery = require('BigQuery');
 const encodeUriComponent = require('encodeUriComponent');
 const getAllEventData = require('getAllEventData');
@@ -17,13 +19,11 @@ const sha256Sync = require('sha256Sync');
 /*==============================================================================
 ==============================================================================*/
 
-const traceId = getRequestHeader('trace-id');
-
 const eventData = getAllEventData();
 
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
 
-if (!isConsentGivenOrNotRequired()) {
+if (!isConsentGivenOrNotRequired(data, eventData)) {
   return data.gtmOnSuccess();
 }
 
@@ -39,7 +39,6 @@ if (invalidFields) {
   log({
     Name: 'MetaCustomAudiences',
     Type: 'Message',
-    TraceId: traceId,
     EventName: data.audienceAction,
     Message: 'Request was not sent.',
     Reason: invalidFields
@@ -238,7 +237,6 @@ function sendRequests(data, mappedData) {
     log({
       Name: 'MetaCustomAudiences',
       Type: 'Request',
-      TraceId: traceId,
       EventName: data.audienceAction,
       RequestMethod: requestOptions.method,
       RequestUrl: requestUrl,
@@ -256,7 +254,6 @@ function sendRequests(data, mappedData) {
         log({
           Name: 'MetaCustomAudiences',
           Type: 'Response',
-          TraceId: traceId,
           EventName: data.audienceAction,
           ResponseStatusCode: result.statusCode,
           ResponseHeaders: result.headers,
@@ -277,7 +274,6 @@ function sendRequests(data, mappedData) {
       log({
         Name: 'MetaCustomAudiences',
         Type: 'Message',
-        TraceId: traceId,
         EventName: data.audienceAction,
         Message: 'Some request failed or timed out.',
         Reason: JSON.stringify(result)
@@ -378,7 +374,7 @@ function itemizeInput(input) {
   return [];
 }
 
-function isConsentGivenOrNotRequired() {
+function isConsentGivenOrNotRequired(data, eventData) {
   if (data.adStorageConsent !== 'required') return true;
   if (eventData.consent_state) return !!eventData.consent_state.ad_storage;
   const xGaGcs = eventData['x-ga-gcs'] || ''; // x-ga-gcs is a string like "G110"
@@ -389,6 +385,8 @@ function log(rawDataToLog) {
   const logDestinationsHandlers = {};
   if (determinateIsLoggingEnabled()) logDestinationsHandlers.console = logConsole;
   if (determinateIsLoggingEnabledForBigQuery()) logDestinationsHandlers.bigQuery = logToBigQuery;
+
+  rawDataToLog.TraceId = getRequestHeader('trace-id');
 
   const keyMappings = {
     // No transformation for Console is needed.
@@ -441,9 +439,7 @@ function logToBigQuery(dataToLog) {
     dataToLog[p] = JSON.stringify(dataToLog[p]);
   });
 
-  const bigquery =
-    getType(BigQuery) === 'function' ? BigQuery() /* Only during Unit Tests */ : BigQuery;
-  bigquery.insert(connectionInfo, [dataToLog], { ignoreUnknownValues: true });
+  BigQuery.insert(connectionInfo, [dataToLog], { ignoreUnknownValues: true });
 }
 
 function determinateIsLoggingEnabled() {
