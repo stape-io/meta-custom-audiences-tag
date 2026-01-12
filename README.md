@@ -9,19 +9,25 @@ This tag supports three primary actions:
 
 ## How to use the Meta Custom Audiences Tag
 
-1.  Add the **Meta Custom Audiences Tag** to your server container in GTM.
+1.  Add the **Meta Custom Audiences Tag** to your server container in GTM from the [GTM Template Gallery](https://tagmanager.google.com/gallery/#/owners/stape-io/templates/meta-custom-audiences-tag).
 2.  Select the **Action** you want to perform (`Add to Audience`, `Remove from Audience`, or `Remove from All Audiences`).
-3.  Configure the **Destination Audiences** or **Destination Ad Accounts** by providing the required IDs and Access Tokens.
-4.  Configure the **Audience Members** section with the user data you want to send. You can provide data for a single user or multiple users in a batch.
-5.  The tag will automatically hash user identifiers (like email and phone) using SHA256 if they are not already hashed.
+3.  Choose the authentication method:
+    *  **Stape Meta Connection (recommended)**: sign in to the Meta Connection via **Connections tab** in the [Stape admin panel](https://app.stape.io/container). This is the easiest and recommended way to set up the authentication.
+    *  **Own Meta Credentials**: A System User access token with the `ads_management` permission is required. This token must be associated with the Ad Account that owns the audience. You can find more details on how to generate on the [Generating a System User Access Token section](#generating-a-system-user-access-token-for-own-meta-credentials-authentication-method).
+
+4.  Configure the **Destination Audiences** or **Destination Ad Accounts** by providing the required IDs and, if using the **Own Meta Credentials** method, the **Access Tokens**.
+5.  Configure the **Audience Members** section with the user data you want to send. You can provide data for a single user or multiple users in a batch.
+6.  The tag will automatically hash user identifiers (like email and phone) using SHA256 if they are not already hashed.
 
 ## Parameters
 
 ### Main Configuration
 - **Action**: Choose the operation to perform.
-- **Destination Audiences**: (For `Add`/`Remove` actions) A list of Audience IDs and their corresponding Access Tokens.
-- **Destination Ad Accounts**: (For `Remove from All` action) A list of Ad Account IDs and their corresponding Access Tokens.
-- **Access Token**: A System User access token with the `ads_management` permission. This token must be associated with the Ad Account that owns the audience. You can find more details on how to generate on the [Generating a System User Access Token section](#generating-a-system-user-access-token).
+- **Authentication Type**: **Own Meta Credentials** or **Stape Meta Connection** (recommended).
+  - **Access Token** (only if using **Own Meta Credentials**): A System User access token with the `ads_management` permission is required. This token must be associated with the Ad Account that owns the audience. You can find more details on how to generate on the [Generating a System User Access Token section](#generating-a-system-user-access-token-for-own-meta-credentials-authentication-method).
+- **Destination Audiences**: (For `Add`/`Remove` actions) A list of Audience IDs and, if using the **Own Meta Credentials** method, their corresponding **Access Tokens**.
+- **Destination Ad Accounts**: (For `Remove from All` action) A list of Ad Account IDs and, if using the **Own Meta Credentials** method, their corresponding **Access Tokens**.
+
 
 ### Audience Members
 The tag can be configured to send data for a single user or for multiple users at once.
@@ -48,9 +54,12 @@ The tag can be configured to send data for a single user or for multiple users a
 - **Logging**: Configure console and/or BigQuery logging for debugging and monitoring requests and responses.
 
 
-## Generating a System User Access Token
+## Generating a System User Access Token (for **Own Meta Credentials** authentication method)
 
-This tag requires a long-lived System User access token for server-to-server authentication. Below are the steps to create the necessary Meta App and generate the token.
+<details>
+  <summary>Click to expand</summary>
+
+If using the tag with the **Own Meta Credentials** authentication method, it requires a long-lived System User access token for server-to-server authentication. Below are the steps to create the necessary Meta App and generate the token.
 
 ❗ You must have **Admin** access to that Business Manager.
 
@@ -72,11 +81,11 @@ A Meta App is required to grant your system the correct permissions.
 
 1.  Navigate to the [Meta for Developers Portal](https://developers.facebook.com/apps) and log in.
 2.  Click **Create App**.
-3.  Select **Business** as the app type. To see this option you may have to select **Other** on the *Use cases* form step.
-4.  Provide an **App display name** and ensure your **App contact email** is correct.
-5.  Select the correct **Meta Business Manager account** from the dropdown. This should be the Business Account that owns the Ad Account and will contain the System User.
-6.  Click **Create app**.
-7.  Once the app is created, go to **"Add Products"** and enable the **Marketing API**.
+3.  Add an **App Name** and **App Contact Email**. Click **Next**.
+4.  Filter by **All** and select the **Measure ad performance data with Marketing API** use case. Click **Next**.
+5.  Choose the correct **Meta Business Manager account**. This should be the Business Account that owns the Ad Account and will contain the System User. Click **Next**.
+6.  On the `Publishing requirements` step, click **Next**.
+7.  On the `Overview` step, click **Go to app dashboard**.
 
 > If you are not able to create it, then you must already have a System User created and your account limit has been reached, or you don't have the required permissions (you must by Admin of the Business Manager ccount).
 
@@ -93,15 +102,15 @@ Follow these steps within your [Meta Business Settings](https://business.faceboo
 
 2.  **Assign Assets to the System User**:
     The System User needs permission to access both the Ad Account and the App.
-    * With the new System User selected, click **Assign Assets**.
+    * With the new System User selected, click **Assign Assets** in the hamburger menu in the top-right corner.
     * **Assign the App**: Select the **Apps** asset type, choose the app you created in Part 1, and enable the **Develop app** permission.
     * **Assign the Ad Account**: Click **Assign Assets** again. Select the **Ad accounts** asset type, choose the target Ad Account(s), and enable the **Manage campaigns (ads)** permission.
 
 3.  **Generate the Token**:
     * With the System User selected, click **Generate new token**.
     * Select the **App** you created.
-    * Under **Available permissions**, select `ads_management`.
     * Choose a **Permanent token** (never expires) if available.
+    * Under **Select permissions**, select `ads_management`.
     * Click **Generate Token**.
     * **Important**: Copy the token and store it securely (e.g., as a variable in your GTM Server Container).
 
@@ -113,6 +122,8 @@ A System User from one Business Manager (e.g., an Agency) cannot directly access
 2.  The **Client** must then share their **Ad Account** asset with the Agency partner, granting the `Manage ad account` role.
 3.  The **Agency** can now assign this shared Ad Account to its own System User.
 4.  The token generated by the Agency's System User will now be authorized to manage the Client's audiences.
+
+</details>
 
 
 ## Useful resources

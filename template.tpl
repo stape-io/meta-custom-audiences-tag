@@ -63,12 +63,17 @@ ___TEMPLATE_PARAMETERS___
       {
         "value": "own",
         "displayValue": "Own Meta Credentials",
-        "help": "This type of auth is more complicated. It uses a combination of Meta App and System User to generate an Access Token.\n\u003cbr/\u003e\n⚠️ Meta enforces rate limits on API calls. Make sure your usage stays within these limits to avoid errors.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag?tab\u003dreadme-ov-file#generating-a-system-user-access-token\"\u003eLearn more\u003c/a\u003e.",
+        "help": "This type of auth is more complicated. It uses a combination of Meta App and System User to generate an Access Token.\n\u003cbr/\u003e\n⚠️ Meta enforces rate limits on API calls. Make sure your usage stays within these limits to avoid errors.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag/tree/add-stape-connection?tab\u003dreadme-ov-file#generating-a-system-user-access-token-for-own-meta-credentials-authentication-method\"\u003eLearn more\u003c/a\u003e.",
         "subParams": []
+      },
+      {
+        "value": "stape",
+        "displayValue": "Stape Meta Connection",
+        "help": "You can enable it on the Stape container settings, in the \u003ca href\u003d\"https://app.stape.io/container/\" target\u003d\"_blank\"\u003eConnections\u003c/a\u003e section."
       }
     ],
     "simpleValueType": true,
-    "defaultValue": "own"
+    "defaultValue": "stape"
   },
   {
     "type": "GROUP",
@@ -77,8 +82,6 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "GROUP",
         "name": "ownAuthDestinationsGroup",
-        "displayName": "",
-        "groupStyle": "NO_ZIPPY",
         "subParams": [
           {
             "type": "SIMPLE_TABLE",
@@ -121,7 +124,7 @@ ___TEMPLATE_PARAMETERS___
               }
             ],
             "newRowButtonText": "Add Audience",
-            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \u003cli\u003eA Meta App: \u003cul\u003e \u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \u003cli\u003eSet as an \u003ci\u003eApp Type\u003c/i\u003e of \u003ci\u003eBusiness\u003c/i\u003e\u003c/li\u003e \u003cli\u003eConfigured for the \u003ci\u003eMarketing API\u003c/i\u003e product\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \u003c/ul\u003e \u003c/li\u003e \u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag?tab\u003dreadme-ov-file#generating-a-system-user-access-token\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.",
+            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \n\u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \n\u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \n\u003cli\u003eA Meta App: \n\u003cul\u003e \n\u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \n\u003cli\u003eConfigured for the \u003ci\u003eMeasure ad performance data with Marketing API\u003c/i\u003e use case\u003c/li\u003e \n\u003c/ul\u003e \n\u003c/li\u003e \n\u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \n\u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \n\u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \n\u003c/ul\u003e \n\u003c/li\u003e \n\u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag/tree/add-stape-connection?tab\u003dreadme-ov-file#generating-a-system-user-access-token-for-own-meta-credentials-authentication-method\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.",
             "enablingConditions": [
               {
                 "paramName": "audienceAction",
@@ -190,6 +193,98 @@ ___TEMPLATE_PARAMETERS___
           {
             "paramName": "authFlow",
             "paramValue": "own",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "GROUP",
+        "name": "stapeAuthDestinationsGroup",
+        "subParams": [
+          {
+            "type": "SIMPLE_TABLE",
+            "name": "stapeAuthAudiencesList",
+            "displayName": "Destination Audiences",
+            "simpleTableColumns": [
+              {
+                "defaultValue": "",
+                "displayName": "Audience ID",
+                "name": "audienceId",
+                "type": "TEXT",
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  },
+                  {
+                    "type": "POSITIVE_NUMBER"
+                  }
+                ],
+                "valueHint": "1234567890",
+                "isUnique": true
+              }
+            ],
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ],
+            "newRowButtonText": "Add Audience",
+            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\nMake sure the Meta Business Manager account you connect to Stape has access to the Audience.",
+            "enablingConditions": [
+              {
+                "paramName": "audienceAction",
+                "paramValue": "ingest",
+                "type": "EQUALS"
+              },
+              {
+                "paramName": "audienceAction",
+                "paramValue": "remove",
+                "type": "EQUALS"
+              }
+            ]
+          },
+          {
+            "type": "SIMPLE_TABLE",
+            "name": "stapeAuthAdAccountsList",
+            "displayName": "Destination Ad Accounts",
+            "simpleTableColumns": [
+              {
+                "defaultValue": "",
+                "displayName": "Ad Account ID",
+                "name": "adAccountId",
+                "type": "TEXT",
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  },
+                  {
+                    "type": "POSITIVE_NUMBER"
+                  }
+                ],
+                "valueHint": "1234567890",
+                "isUnique": true
+              }
+            ],
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ],
+            "newRowButtonText": "Add Ad Account",
+            "help": "\u003cb\u003eAd Account ID\u003c/b\u003e: The ID of the ad account where the audiences you want to interact with reside. You can find this within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\nMake sure the Meta Business Manager account you connect to Stape has access to the Ad Account.",
+            "enablingConditions": [
+              {
+                "paramName": "audienceAction",
+                "paramValue": "removeFromAll",
+                "type": "EQUALS"
+              }
+            ]
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "authFlow",
+            "paramValue": "stape",
             "type": "EQUALS"
           }
         ]
@@ -588,8 +683,6 @@ ___TEMPLATE_PARAMETERS___
 
 ___SANDBOXED_JS_FOR_SERVER___
 
-/// <reference path="./server-gtm-sandboxed-apis.d.ts" />
-
 const BigQuery = require('BigQuery');
 const encodeUriComponent = require('encodeUriComponent');
 const getAllEventData = require('getAllEventData');
@@ -610,15 +703,10 @@ const sha256Sync = require('sha256Sync');
 ==============================================================================*/
 
 const eventData = getAllEventData();
-
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
+const apiVersion = '24.0';
 
-if (!isConsentGivenOrNotRequired(data, eventData)) {
-  return data.gtmOnSuccess();
-}
-
-const url = eventData.page_location || getRequestHeader('referer');
-if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) {
+if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
 }
 
@@ -637,7 +725,7 @@ if (invalidFields) {
   return data.gtmOnFailure();
 }
 
-sendRequests(data, mappedData);
+sendRequests(data, mappedData, apiVersion);
 
 if (useOptimisticScenario) {
   return data.gtmOnSuccess();
@@ -768,40 +856,79 @@ function validateMappedData(mappedData) {
 }
 
 function getDestinations(data) {
-  const authFlow = data.authFlow === 'own';
-  const audiencesList = authFlow ? data.ownAuthAudiencesList : data.stapeAuthAudiencesList;
-  const adAccountsList = authFlow ? data.ownAuthAdAccountsList : data.stapeAuthAdAccountsList;
-
-  return data.audienceAction === 'removeFromAll' ? adAccountsList : audiencesList;
+  const ownAuthFlow = data.authFlow === 'own';
+  const action = data.audienceAction;
+  if (action === 'ingest' || action === 'remove') {
+    return ownAuthFlow
+      ? data.ownAuthAudiencesList
+      : [
+          {
+            audienceIds: data.stapeAuthAudiencesList.map((audience) => {
+              return makeString(audience.audienceId);
+            })
+          }
+        ];
+  } else if (action === 'removeFromAll') {
+    return ownAuthFlow
+      ? data.ownAuthAdAccountsList
+      : [
+          {
+            adAccountIds: data.stapeAuthAdAccountsList.map((adAccount) => {
+              return makeString(adAccount.adAccountId);
+            })
+          }
+        ];
+  }
 }
 
-function generateRequestUrl(data, config) {
-  const apiVersion = '23.0';
-  const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
+function generateRequestUrl(data, config, apiVersion) {
+  const getAudiencePathByActionAndAuthFlow = (data) => {
+    const authFlow = data.authFlow;
+    const action = data.audienceAction;
+    switch (action) {
+      case 'ingest':
+        if (authFlow === 'own') return '/' + enc(config.audienceId) + '/users';
+        return '/audiences/users-add';
+      case 'remove':
+        if (authFlow === 'own') return '/' + enc(config.audienceId) + '/users';
+        return '/audiences/users-remove';
+      case 'removeFromAll':
+        if (authFlow === 'own') return '/act_' + enc(config.adAccountId) + '/usersofanyaudience';
+        return '/adaccounts/audiences-users-remove';
+    }
+  };
 
-  let audiencePath;
-  switch (data.audienceAction) {
-    case 'ingest':
-    case 'remove':
-      audiencePath = '/' + enc(config.audienceId) + '/users';
-      break;
-    case 'removeFromAll':
-      audiencePath = '/act_' + enc(config.adAccountId) + '/usersofanyaudience';
-      break;
+  if (data.authFlow === 'own') {
+    const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
+    const audiencePath = getAudiencePathByActionAndAuthFlow(data);
+    const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
+    return requestUrl;
   }
 
-  const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
+  const containerIdentifier = getRequestHeader('x-gtm-identifier');
+  const defaultDomain = getRequestHeader('x-gtm-default-domain');
+  const containerApiKey = getRequestHeader('x-gtm-api-key');
 
-  return requestUrl;
+  const audiencePath = getAudiencePathByActionAndAuthFlow(data);
+  return (
+    'https://' +
+    enc(containerIdentifier) +
+    '.' +
+    enc(defaultDomain) +
+    '/stape-api/' +
+    enc(containerApiKey) +
+    '/v1/meta' +
+    audiencePath
+  );
 }
 
-function generateRequestOptions(data) {
-  const requestMethodByAudienceAction = {
-    ingest: 'POST',
-    remove: 'DELETE',
-    removeFromAll: 'DELETE'
+function generateRequestOptions(data, apiVersion) {
+  const requestMethodByActionAndAuthFlow = {
+    ingest: { own: 'POST', stape: 'POST' },
+    remove: { own: 'DELETE', stape: 'POST' },
+    removeFromAll: { own: 'DELETE', stape: 'POST' }
   };
-  const requestMethod = requestMethodByAudienceAction[data.audienceAction];
+  const requestMethod = requestMethodByActionAndAuthFlow[data.audienceAction][data.authFlow];
 
   const options = {
     method: requestMethod,
@@ -810,19 +937,37 @@ function generateRequestOptions(data) {
     }
   };
 
+  if (data.authFlow === 'stape') {
+    options.headers['x-meta-api-version'] = apiVersion;
+    options.timeout = 20000;
+  }
+
   return options;
 }
 
-function sendRequests(data, mappedData) {
+function sendRequests(data, mappedData, apiVersion) {
   const destinations = getDestinations(data);
-  const requestOptions = generateRequestOptions(data);
+  const requestOptions = generateRequestOptions(data, apiVersion);
 
-  const requests = destinations.map((d) => {
-    const requestUrl = generateRequestUrl(data, {
-      audienceId: d.audienceId,
-      adAccountId: d.adAccountId,
-      accessToken: d.accessToken
-    });
+  const requests = destinations.map((destination) => {
+    const config =
+      data.authFlow === 'own'
+        ? {
+            audienceId: destination.audienceId,
+            adAccountId: destination.adAccountId,
+            accessToken: destination.accessToken
+          }
+        : undefined;
+    const requestUrl = generateRequestUrl(data, config, apiVersion);
+
+    // Not part of the Meta API spec. Only used for Stape Connection.
+    if (data.authFlow === 'stape') {
+      if (data.audienceAction === 'ingest' || data.audienceAction === 'remove') {
+        mappedData.audienceIds = destination.audienceIds;
+      } else if (data.audienceAction === 'removeFromAll') {
+        mappedData.adAccountIds = destination.adAccountIds;
+      }
+    }
 
     log({
       Name: 'MetaCustomAudiences',
@@ -833,31 +978,46 @@ function sendRequests(data, mappedData) {
       RequestBody: mappedData
     });
 
-    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedData));
-  });
+    let message = '';
+    const audienceIds = destination.audienceId || destination.audienceIds;
+    const adAccountIds = destination.adAccountId || destination.adAccountIds;
+    if (audienceIds) message = ' Audience ID(s): ' + audienceIds;
+    else if (adAccountIds) message = ' Ad Account ID(s): ' + adAccountIds;
 
-  Promise.all(requests)
-    .then((results) => {
-      let someRequestFailed = false;
-
-      results.forEach((result) => {
+    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedData))
+      .then((result) => {
         log({
           Name: 'MetaCustomAudiences',
           Type: 'Response',
           EventName: data.audienceAction,
           ResponseStatusCode: result.statusCode,
           ResponseHeaders: result.headers,
-          ResponseBody: result.body
+          ResponseBody: result.body,
+          Message: message
         });
 
-        if (result.statusCode < 200 || result.statusCode >= 300) {
-          someRequestFailed = true;
-        }
-      });
+        if (result.statusCode < 200 || result.statusCode >= 300) return false;
+        return true;
+      })
+      .catch((result) => {
+        log({
+          Name: 'MetaCustomAudiences',
+          Type: 'Message',
+          EventName: data.audienceAction,
+          Message: 'Request failed or timed out.' + message,
+          Reason: JSON.stringify(result)
+        });
 
+        return false;
+      });
+  });
+
+  Promise.all(requests)
+    .then((results) => {
       if (!useOptimisticScenario) {
-        if (someRequestFailed) data.gtmOnFailure();
-        else data.gtmOnSuccess();
+        const someRequestFailed = results.some((success) => !success);
+        if (someRequestFailed) return data.gtmOnFailure();
+        else return data.gtmOnSuccess();
       }
     })
     .catch((result) => {
@@ -865,17 +1025,26 @@ function sendRequests(data, mappedData) {
         Name: 'MetaCustomAudiences',
         Type: 'Message',
         EventName: data.audienceAction,
-        Message: 'Some request failed or timed out.',
+        Message: 'Something went wrong.',
         Reason: JSON.stringify(result)
       });
 
-      if (!useOptimisticScenario) data.gtmOnFailure();
+      if (!useOptimisticScenario) return data.gtmOnFailure();
     });
 }
 
 /*==============================================================================
   Helpers
 ==============================================================================*/
+
+function shouldExitEarly(data, eventData) {
+  if (!isConsentGivenOrNotRequired(data, eventData)) return true;
+
+  const url = eventData.page_location || getRequestHeader('referer');
+  if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) return true;
+
+  return false;
+}
 
 function enc(data) {
   return encodeUriComponent(makeString(data || ''));
@@ -1104,6 +1273,51 @@ ___SERVER_PERMISSIONS___
                     "string": "referer"
                   }
                 ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "headerName"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "x-gtm-identifier"
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "headerName"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "x-gtm-default-domain"
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "headerName"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "x-gtm-api-key"
+                  }
+                ]
               }
             ]
           }
@@ -1216,7 +1430,15 @@ ___SERVER_PERMISSIONS___
             "listItem": [
               {
                 "type": 1,
-                "string": "https://graph.facebook.com/"
+                "string": "https://graph.facebook.com/*"
+              },
+              {
+                "type": 1,
+                "string": "https://*.stape.io/*"
+              },
+              {
+                "type": 1,
+                "string": "https://*.stape.net/*"
               }
             ]
           }
@@ -1298,21 +1520,21 @@ scenarios:
 - name: '[Single User] Should NOT send request if Audience Schema or Audience Members
     list is empty'
   code: |-
-    setMockDataByAudienceMethod('ingest', {
+    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
       userMode: 'single',
       singleUserIdentifiersList: [],
       enableDataProcessingOptions: false,
       singleUserDataProcessingOptionsList: undefined
     });
 
-    runCode(mockData);
+    runCode(copyMockData);
 
     assertApi('sendHttpRequest').wasNotCalled();
     assertApi('gtmOnSuccess').wasNotCalled();
     assertApi('gtmOnFailure').wasCalled();
 - name: '[Multiple Users] Should NOT send request if Audience Schema list is empty'
   code: |-
-    setMockDataByAudienceMethod('ingest', {
+    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
       userMode: 'multiple',
       multipleUsersSchema: [],
       singleUserIdentifiersList: undefined,
@@ -1320,14 +1542,14 @@ scenarios:
       singleUserDataProcessingOptionsList: undefined
     });
 
-    runCode(mockData);
+    runCode(copyMockData);
 
     assertApi('sendHttpRequest').wasNotCalled();
     assertApi('gtmOnSuccess').wasNotCalled();
     assertApi('gtmOnFailure').wasCalled();
 - name: '[Multiple Users] Should NOT send request if Audience Members list is empty'
   code: |-
-    setMockDataByAudienceMethod('ingest', {
+    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
       userMode: 'multiple',
       multipleUsersAudienceMembers: [],
       singleUserIdentifiersList: undefined,
@@ -1335,7 +1557,7 @@ scenarios:
       singleUserDataProcessingOptionsList: undefined
     });
 
-    runCode(mockData);
+    runCode(copyMockData);
 
     assertApi('sendHttpRequest').wasNotCalled();
     assertApi('gtmOnSuccess').wasNotCalled();
@@ -1346,7 +1568,7 @@ scenarios:
     const audienceMembers = ['bar'];
     audienceMembers.length = 10001;
 
-    setMockDataByAudienceMethod('ingest', {
+    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
       userMode: 'multiple',
       multipleUsersAudienceMembers: audienceMembers,
       singleUserIdentifiersList: undefined,
@@ -1354,197 +1576,170 @@ scenarios:
       singleUserDataProcessingOptionsList: undefined
     });
 
-    runCode(mockData);
+    runCode(copyMockData);
 
     assertApi('sendHttpRequest').wasNotCalled();
     assertApi('gtmOnSuccess').wasNotCalled();
     assertApi('gtmOnFailure').wasCalled();
-- name: '[Ingest] Request URL, Request Options and Request Body are succesfully built
-    and sent'
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'single'\n});\n\nmockData.ownAuthAudiencesList.push({\n\
-    \  audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
-    });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
-    \ requestBody) => {\n  assertThat(requestUrl).isEqualTo(\n    'https://graph.facebook.com/v'\
-    \ + apiVersion + '/' + mockData.ownAuthAudiencesList[requestCount].audienceId\
-    \ + '/users?access_token=' + mockData.ownAuthAudiencesList[requestCount].accessToken\n\
-    \  );\n\n  assertThat(requestOptions).isEqualTo({\n    method: 'POST',\n    headers:\
-    \ { 'Content-Type': 'application/json' }\n  });\n  \n  const parsedRequestBody\
-    \ = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
-    \  \n  requestCount++;\n  \n  return Promise.create((resolve, reject) => {\n \
-    \   resolve({ statusCode: 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(()\
-    \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
-    });"
-- name: '[Remove] Request URL, Request Options and Request Body are succesfully built
-    and sent'
-  code: "setMockDataByAudienceMethod('remove', {\n  userMode: 'single'\n});\n\nmockData.ownAuthAudiencesList.push({\n\
-    \  audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
-    });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
-    \ requestBody) => {\n  assertThat(requestUrl).isEqualTo(\n    'https://graph.facebook.com/v'\
-    \ + apiVersion + '/' + mockData.ownAuthAudiencesList[requestCount].audienceId\
-    \ + '/users?access_token=' + mockData.ownAuthAudiencesList[requestCount].accessToken\n\
-    \  );\n\n  assertThat(requestOptions).isEqualTo({\n    method: 'DELETE',\n   \
-    \ headers: { 'Content-Type': 'application/json' }\n  });\n  \n  const parsedRequestBody\
-    \ = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
-    \  \n  requestCount++;\n  \n  return Promise.create((resolve, reject) => {\n \
-    \   resolve({ statusCode: 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(()\
-    \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
-    });"
-- name: '[Remove from All] Request URL, Request Options and Request Body are succesfully
+- name: '[Single User - All Auth Types and All Methods] Request URL, Request Options
+    and Request Body are succesfully built and sent'
+  code: "[\n  {\n    authMethod: 'own',\n    eventType: 'ingest',\n    mock: (copyMockData)\
+    \ => {\n      copyMockData.ownAuthAudiencesList.push({\n        audienceId: 'expectedAudienceId2',\n\
+    \        accessToken: 'expectedAccessToken2'\n      });\n    },\n    expected:\
+    \ {\n      getExpectedRequestUrl: (copyMockData, requestCount) => {\n        return\
+    \ 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION + '/' + copyMockData.ownAuthAudiencesList[requestCount].audienceId\
+    \ + '/users?access_token=' + copyMockData.ownAuthAudiencesList[requestCount].accessToken;\n\
+    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
+    \ { 'Content-Type': 'application/json' }\n      },\n      getRequestBody: () =>\
+    \ EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\n    }\n  },\n  {\n    authMethod:\
+    \ 'own',\n    eventType: 'remove',\n    mock: (copyMockData) => {\n      copyMockData.ownAuthAudiencesList.push({\n\
+    \        audienceId: 'expectedAudienceId2',\n        accessToken: 'expectedAccessToken2'\n\
+    \      });\n    },\n    expected: {\n      getExpectedRequestUrl: (copyMockData,\
+    \ requestCount) => {\n        return 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION\
+    \ + '/' + copyMockData.ownAuthAudiencesList[requestCount].audienceId + '/users?access_token='\
+    \ + copyMockData.ownAuthAudiencesList[requestCount].accessToken;\n      },\n \
+    \     requestOptions: {\n        method: 'DELETE',\n        headers: { 'Content-Type':\
+    \ 'application/json' }\n      },\n      getRequestBody: () => EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\n\
+    \    }\n  },\n  {\n    authMethod: 'own',\n    eventType: 'removeFromAll',\n \
+    \   mock: (copyMockData) => {\n      copyMockData.ownAuthAdAccountsList.push({\n\
+    \        adAccountId: 'expectedAdAccountId2',\n        accessToken: 'expectedAccessToken2'\n\
+    \      });\n    },\n    expected: {\n      getExpectedRequestUrl: (copyMockData,\
+    \ requestCount) => {\n        return 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION\
+    \ + '/act_' + copyMockData.ownAuthAdAccountsList[requestCount].adAccountId + '/usersofanyaudience?access_token='\
+    \ + copyMockData.ownAuthAdAccountsList[requestCount].accessToken;\n      },\n\
+    \      requestOptions: {\n        method: 'DELETE',\n        headers: { 'Content-Type':\
+    \ 'application/json' }\n      },\n      getRequestBody: () => EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\n\
+    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'ingest',\n    mock:\
+    \ (copyMockData) => {\n      copyMockData.stapeAuthAudiencesList.push({\n    \
+    \    audienceId: 'expectedAudienceId2'\n      });\n    },\n    expected: {\n \
+    \     getExpectedRequestUrl: () => {\n        return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/audiences/users-add';\n\
+    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
+    \ { \n          'Content-Type': 'application/json',\n          'x-meta-api-version':\
+    \ EXPECTED_META_API_VERSION\n        },\n        timeout: 20000\n      },\n  \
+    \    getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
+    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'remove',\n    mock:\
+    \ (copyMockData) => {\n      copyMockData.stapeAuthAudiencesList.push({\n    \
+    \    audienceId: 'expectedAudienceId2'\n      });\n    },\n    expected: {\n \
+    \     getExpectedRequestUrl: () => {\n        return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/audiences/users-remove';\n\
+    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
+    \ { \n          'Content-Type': 'application/json',\n          'x-meta-api-version':\
+    \ EXPECTED_META_API_VERSION\n        },\n        timeout: 20000\n      },\n  \
+    \    getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
+    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'removeFromAll',\n\
+    \    mock: (copyMockData) => {\n      copyMockData.stapeAuthAdAccountsList.push({\n\
+    \        adAccountId: 'expectedAdAccountId2'\n      });\n    },\n    expected:\
+    \ {\n      getExpectedRequestUrl: () => {\n        return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/adaccounts/audiences-users-remove';\n\
+    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
+    \ { \n          'Content-Type': 'application/json',\n          'x-meta-api-version':\
+    \ EXPECTED_META_API_VERSION\n        },\n        timeout: 20000\n      },\n  \
+    \    getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
+    \    }\n  }\n].forEach((scenario) => {\n  const copyMockData = setMockDataByAudienceMethodAndAuthType(scenario.eventType,\
+    \ scenario.authMethod, {\n    userMode: 'single'\n  });\n  \n  scenario.mock(copyMockData);\n\
+    \  \n  let requestCount = 0;\n  mock('sendHttpRequest', (requestUrl, requestOptions,\
+    \ requestBody) => {\n    assertThat(requestUrl).isEqualTo(scenario.expected.getExpectedRequestUrl(copyMockData,\
+    \ requestCount));\n  \n    assertThat(requestOptions).isEqualTo(scenario.expected.requestOptions);\n\
+    \    \n    const parsedRequestBody = JSON.parse(requestBody);\n    assertThat(parsedRequestBody).isEqualTo(scenario.expected.getRequestBody(copyMockData));\n\
+    \    \n    requestCount++;\n    \n    return Promise.create((resolve, reject)\
+    \ => {\n      resolve({ statusCode: 200 });\n    });  \n  });\n  \n  runCode(copyMockData);\n\
+    \n  callLater(() => {\n    assertApi('gtmOnSuccess').wasCalled();\n    assertApi('gtmOnFailure').wasNotCalled();\n\
+    \  });\n});"
+- name: '[Multiple Users - All Auth Types and All Methods] Request Body is successfully
     built and sent'
-  code: "setMockDataByAudienceMethod('removeFromAll', {\n  userMode: 'single'\n});\n\
-    \nmockData.ownAuthAdAccountsList.push({\n  adAccountId: 'expectedAdAccountId2',\n\
-    \  accessToken: 'expectedAccessToken2'\n});\n\nlet requestCount = 0;\nmock('sendHttpRequest',\
-    \ (requestUrl, requestOptions, requestBody) => {\n  assertThat(requestUrl).isEqualTo(\n\
-    \    'https://graph.facebook.com/v' + apiVersion + '/act_' + mockData.ownAuthAdAccountsList[requestCount].adAccountId\
-    \ + '/usersofanyaudience?access_token=' + mockData.ownAuthAdAccountsList[requestCount].accessToken\n\
-    \  );\n\n  assertThat(requestOptions).isEqualTo({\n    method: 'DELETE',\n   \
-    \ headers: { 'Content-Type': 'application/json' }\n  });\n  \n  const parsedRequestBody\
-    \ = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(singleUserExpectedRequestBody);\n\
-    \  \n  requestCount++;\n  \n  return Promise.create((resolve, reject) => {\n \
-    \   resolve({ statusCode: 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(()\
-    \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
-    });"
-- name: '[Ingest - Multiple Users] Request Body is successfully built and sent'
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'multiple',\n  singleUserIdentifiersList:\
-    \ undefined,\n  enableDataProcessingOptions: undefined,\n  singleUserDataProcessingOptionsList:\
-    \ undefined\n});\n\nmock('sendHttpRequest', (requestUrl, requestOptions, requestBody)\
-    \ => {\n  const parsedRequestBody = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(multipleUsersExpectedRequestBody);\n\
-    \n  return Promise.create((resolve, reject) => {\n    resolve({ statusCode: 200\
-    \ });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n\
-    \  assertApi('gtmOnFailure').wasNotCalled();\n});"
-- name: '[Remove - Multiple Users] Request Body is successfully built and sent'
-  code: "setMockDataByAudienceMethod('remove', {\n  userMode: 'multiple',\n  singleUserIdentifiersList:\
-    \ undefined,\n  enableDataProcessingOptions: undefined,\n  singleUserDataProcessingOptionsList:\
-    \ undefined\n});\n\nmock('sendHttpRequest', (requestUrl, requestOptions, requestBody)\
-    \ => {\n  const parsedRequestBody = JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(multipleUsersExpectedRequestBody);\n\
-    \n  return Promise.create((resolve, reject) => {\n    resolve({ statusCode: 200\
-    \ });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n\
-    \  assertApi('gtmOnFailure').wasNotCalled();\n});"
-- name: '[Remove from All - Multiple Users] Request Body is successfully built and
-    sent'
-  code: "setMockDataByAudienceMethod('removeFromAll', {\n  userMode: 'multiple',\n\
-    \  singleUserIdentifiersList: undefined,\n  enableDataProcessingOptions: undefined,\n\
-    \  singleUserDataProcessingOptionsList: undefined\n});\n\nmock('sendHttpRequest',\
-    \ (requestUrl, requestOptions, requestBody) => {\n  const parsedRequestBody =\
-    \ JSON.parse(requestBody);\n  assertThat(parsedRequestBody).isEqualTo(multipleUsersExpectedRequestBody);\n\
-    \n  return Promise.create((resolve, reject) => {\n    resolve({ statusCode: 200\
-    \ });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n\
-    \  assertApi('gtmOnFailure').wasNotCalled();\n});"
+  code: "// There's no need to check the Request URL and Request Options because they\
+    \ are the same as the Single User mode.\n\n[\n  {\n    authMethod: 'own',\n  \
+    \  eventType: 'ingest',\n    expected: {\n      getRequestBody: () => EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH\n\
+    \    }\n  },\n  {\n    authMethod: 'own',\n    eventType: 'remove',\n    expected:\
+    \ {\n      getRequestBody: () => EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH\n\
+    \    }\n  },\n  {\n    authMethod: 'own',\n    eventType: 'removeFromAll',\n \
+    \   expected: {\n      getRequestBody: () => EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH\n\
+    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'ingest',\n    expected:\
+    \ {\n      getRequestBody: (copyMockData) => GET_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
+    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'remove',\n    expected:\
+    \ {\n      getRequestBody: (copyMockData) => GET_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
+    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'removeFromAll',\n\
+    \    expected: {\n      getRequestBody: (copyMockData) => GET_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
+    \    }\n  }\n].forEach((scenario) => {\n  const copyMockData = setMockDataByAudienceMethodAndAuthType(scenario.eventType,\
+    \ scenario.authMethod, {\n    userMode: 'multiple',\n    singleUserIdentifiersList:\
+    \ undefined,\n    enableDataProcessingOptions: undefined,\n    singleUserDataProcessingOptionsList:\
+    \ undefined\n  });\n  \n  mock('sendHttpRequest', (requestUrl, requestOptions,\
+    \ requestBody) => {\n    const parsedRequestBody = JSON.parse(requestBody);\n\
+    \    assertThat(parsedRequestBody).isEqualTo(scenario.expected.getRequestBody(copyMockData));\n\
+    \  \n    return Promise.create((resolve, reject) => {\n      resolve({ statusCode:\
+    \ 200 });\n    });  \n  });\n    \n  runCode(copyMockData);\n\n  callLater(()\
+    \ => {\n    assertApi('gtmOnSuccess').wasCalled();\n    assertApi('gtmOnFailure').wasNotCalled();\n\
+    \  });\n});"
 - name: '[Multiple Users] Audience Schema as single item string'
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'multiple',\n  multipleUsersSchema:\
-    \ 'EMAIL',\n  multipleUsersAudienceMembers: ['test', 'test'],\n  singleUserIdentifiersList:\
-    \ undefined,\n  enableDataProcessingOptions: undefined,\n  singleUserDataProcessingOptionsList:\
-    \ undefined\n});\n\nmock('sendHttpRequest', (requestUrl, requestOptions, requestBody)\
-    \ => {\n  const parsedRequestBody = JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo('EMAIL');\n\
+  code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
+    \ {\n  userMode: 'multiple',\n  multipleUsersSchema: 'EMAIL',\n  multipleUsersAudienceMembers:\
+    \ ['test', 'test'],\n  singleUserIdentifiersList: undefined,\n  enableDataProcessingOptions:\
+    \ undefined,\n  singleUserDataProcessingOptionsList: undefined\n});\n\nmock('sendHttpRequest',\
+    \ (requestUrl, requestOptions, requestBody) => {\n  const parsedRequestBody =\
+    \ JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo('EMAIL');\n\
     \n  return Promise.create((resolve, reject) => {\n    resolve({ statusCode: 200\
-    \ });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n\
+    \ });\n  });  \n});\n\nrunCode(copyMockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n\
     \  assertApi('gtmOnFailure').wasNotCalled();\n});"
 - name: '[Multiple Users] Audience Schema as comma-separated string'
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'multiple',\n  multipleUsersSchema:\
-    \ 'EMAIL,PHONE',\n  singleUserIdentifiersList: undefined,\n  enableDataProcessingOptions:\
-    \ undefined,\n  singleUserDataProcessingOptionsList: undefined\n});\n\nmock('sendHttpRequest',\
-    \ (requestUrl, requestOptions, requestBody) => {\n  const parsedRequestBody =\
-    \ JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL',\
+  code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
+    \ {\n  userMode: 'multiple',\n  multipleUsersSchema: 'EMAIL,PHONE',\n  singleUserIdentifiersList:\
+    \ undefined,\n  enableDataProcessingOptions: undefined,\n  singleUserDataProcessingOptionsList:\
+    \ undefined\n});\n\nmock('sendHttpRequest', (requestUrl, requestOptions, requestBody)\
+    \ => {\n  const parsedRequestBody = JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL',\
     \ 'PHONE']);\n\n  return Promise.create((resolve, reject) => {\n    resolve({\
-    \ statusCode: 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() => {\n\
-    \  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
+    \ statusCode: 200 });\n  });  \n});\n\nrunCode(copyMockData);\n\ncallLater(()\
+    \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
     });"
 - name: '[Multiple Users] Audience Schema as array'
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'multiple',\n  multipleUsersSchema:\
-    \ ['EMAIL', 'PHONE'],\n  multipleUsersAudienceMembers: [['test', 'test'], ['test',\
-    \ 'test']],\n  singleUserIdentifiersList: undefined,\n  enableDataProcessingOptions:\
-    \ undefined,\n  singleUserDataProcessingOptionsList: undefined\n});\n\nmock('sendHttpRequest',\
-    \ (requestUrl, requestOptions, requestBody) => {\n  const parsedRequestBody =\
-    \ JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL',\
+  code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
+    \ {\n  userMode: 'multiple',\n  multipleUsersSchema: ['EMAIL', 'PHONE'],\n  multipleUsersAudienceMembers:\
+    \ [['test', 'test'], ['test', 'test']],\n  singleUserIdentifiersList: undefined,\n\
+    \  enableDataProcessingOptions: undefined,\n  singleUserDataProcessingOptionsList:\
+    \ undefined\n});\n\nmock('sendHttpRequest', (requestUrl, requestOptions, requestBody)\
+    \ => {\n  const parsedRequestBody = JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL',\
     \ 'PHONE']);\n\n  return Promise.create((resolve, reject) => {\n    resolve({\
-    \ statusCode: 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() => {\n\
-    \  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
+    \ statusCode: 200 });\n  });  \n});\n\nrunCode(copyMockData);\n\ncallLater(()\
+    \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
     });"
-- name: gtmOnFailure handler is called if some response fails with status code
-  code: "setMockDataByAudienceMethod('ingest', {\n  userMode: 'single'\n});\n\nmockData.ownAuthAudiencesList.push({\n\
-    \  audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
+- name: gtmOnFailure handler is called if some request fails with status code
+  code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
+    \ {\n  userMode: 'single'\n});\n\ncopyMockData.ownAuthAudiencesList.push({\n \
+    \ audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
     });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
-    \ requestBody) => {\n  requestCount++;\n  return Promise.create((resolve, reject)\
-    \ => {\n    resolve({ statusCode: (requestCount === mockData.ownAuthAudiencesList.length\
-    \ - 1) ? 500 : 200 });\n  });  \n});\n\nrunCode(mockData);\n\ncallLater(() =>\
+    \ requestBody) => {\n  requestCount++;\n  const statusCode = (requestCount ===\
+    \ 1) ? 500 : 200;\n  return Promise.create((resolve, reject) => {\n    resolve({\
+    \ statusCode: statusCode });\n  });  \n});\n\nrunCode(copyMockData);\n\ncallLater(()\
+    \ => {\n  assertApi('gtmOnSuccess').wasNotCalled();\n  assertApi('gtmOnFailure').wasCalled();\n\
+    });"
+- name: gtmOnFailure handler is called if some request rejects
+  code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
+    \ {\n  userMode: 'single'\n});\n\ncopyMockData.ownAuthAudiencesList.push({\n \
+    \ audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
+    });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
+    \ requestBody) => { \n  requestCount++;\n  return Promise.create((resolve, reject)\
+    \ => {\n    if (requestCount === 1) reject({ reason: 'failed' });\n    else resolve({\
+    \ statusCode: 200 });\n  });\n});\n\nrunCode(copyMockData);\n\ncallLater(() =>\
     \ {\n  assertApi('gtmOnSuccess').wasNotCalled();\n  assertApi('gtmOnFailure').wasCalled();\n\
     });"
-- name: gtmOnFailure handler is called if some response rejects
-  code: |-
-    setMockDataByAudienceMethod('ingest', {
-      userMode: 'single'
-    });
-
-    mockData.ownAuthAudiencesList.push({
-      audienceId: 'expectedAudienceId2',
-      accessToken: 'expectedAccessToken2'
-    });
-
-    mock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => { });
-
-    mockObject('Promise', {
-      all: () => Promise.create((resolve, reject) => reject({ reason: 'failed' }))
-    });
-
-    runCode(mockData);
-
-    callLater(() => {
-      assertApi('gtmOnSuccess').wasNotCalled();
-      assertApi('gtmOnFailure').wasCalled();
-    });
-- name: '[Logs] Should log to console'
-  code: "const originalMockData = setMockDataByAudienceMethod('ingest');\n\n[\n  //\
-    \ if the 'Always log to console' option is selected\n  { mockData: { logType:\
-    \ 'always' }, expectedDebugMode: true },\n  // if the 'Log during debug and preview'\
-    \ option is selected AND is on preview mode\n  { mockData: { logType: 'debug'\
-    \ }, expectedDebugMode: true },\n].forEach(scenario => {\n  const copyMockData\
-    \ = JSON.parse(JSON.stringify(originalMockData));\n  mergeObj(copyMockData, scenario.mockData);\n\
-    \  \n  mock('getContainerVersion', () => {\n    return {\n      debugMode: scenario.expectedDebugMode\n\
-    \    };\n  }); \n  \n  mock('logToConsole', (logData) => {\n    const parsedLogData\
-    \ = JSON.parse(logData);\n    requiredConsoleKeys.forEach(p => assertThat(parsedLogData[p]).isDefined());\n\
-    \  });\n  \n  runCode(copyMockData);\n  \n  callLater(() => {\n    assertApi('logToConsole').wasCalled();\n\
-    \    assertApi('gtmOnSuccess').wasCalled();\n    assertApi('gtmOnFailure').wasNotCalled();\n\
-    \  });\n});"
-- name: '[Logs] Should NOT log to console'
-  code: "const originalMockData = setMockDataByAudienceMethod('ingest');\n\n[\n  //\
-    \ if the 'Log during debug and preview' option is selected AND is NOT on preview\
-    \ mode\n  { mockData: { logType: 'debug' }, expectedDebugMode: false },\n  //\
-    \ if the 'Do not log' option is selected\n  { mockData: { logType: 'no' }, expectedDebugMode:\
-    \ undefined },\n].forEach(scenario => {\n  const copyMockData = JSON.parse(JSON.stringify(originalMockData));\n\
-    \  mergeObj(copyMockData, scenario.mockData);\n  \n  mock('getContainerVersion',\
-    \ () => {\n    return {\n      debugMode: scenario.expectedDebugMode\n    };\n\
-    \  });\n  \n  runCode(copyMockData);\n\n  callLater(() => {\n    assertApi('logToConsole').wasNotCalled();\n\
-    \    assertApi('gtmOnSuccess').wasCalled();\n    assertApi('gtmOnFailure').wasNotCalled();\n\
-    \  });\n});"
-- name: '[Logs] Should log to BQ, if the ''Log to BigQuery'' option is selected'
-  code: "setMockDataByAudienceMethod('ingest');\n\nmockData.bigQueryLogType = 'always';\n\
-    \nmockObject('BigQuery', {\n  insert: (connectionInfo, rows, options) => { \n\
-    \    assertThat(connectionInfo).isDefined();\n    assertThat(rows).isArray();\n\
-    \    assertThat(rows).hasLength(1);\n    requiredBqKeys.forEach(p => assertThat(rows[0][p]).isDefined());\n\
-    \    assertThat(options).isEqualTo(expectedBqOptions);\n    return Promise.create((resolve,\
-    \ reject) => {\n      resolve();\n    });\n  }\n});\n\nrunCode(mockData);\n\n\
-    callLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
-    });"
-- name: '[Logs] Should NOT log to BQ, if the ''Do not log to BigQuery'' option is
-    selected'
-  code: "setMockDataByAudienceMethod('ingest');\n\nmockData.bigQueryLogType = 'no';\n\
-    \n// assertApi doesn't work for 'BigQuery.insert()'.\n// Ref: https://gtm-gear.com/posts/gtm-templates-testing/\n\
-    mockObject('BigQuery', {\n  insert: (connectionInfo, rows, options) => { \n  \
-    \  fail('BigQuery.insert should not have been called.');\n    return Promise.create((resolve,\
-    \ reject) => {\n      resolve();\n    });\n  }\n});\n\nrunCode(mockData);\n\n\
-    callLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
-    });"
+- name: gtmOnFailure handler is called if Promise dot all rejects
+  code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
+    \ {\n  userMode: 'single'\n});\n\ncopyMockData.ownAuthAudiencesList.push({\n \
+    \ audienceId: 'expectedAudienceId2',\n  accessToken: 'expectedAccessToken2'\n\
+    });\n\nlet requestCount = 0;\nmock('sendHttpRequest', (requestUrl, requestOptions,\
+    \ requestBody) => { \n  requestCount++;\n  return Promise.create((resolve, reject)\
+    \ => {\n    resolve({ statusCode: 200 });\n  });\n});\n\nmockObject('Promise',\
+    \ {\n  all: () => Promise.create((resolve, reject) => reject({ reason: 'failed'\
+    \ }))\n});\n\nrunCode(copyMockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasNotCalled();\n\
+    \  assertApi('gtmOnFailure').wasCalled();\n});"
 setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\nconst\
   \ makeInteger = require('makeInteger');\nconst Object = require('Object');\nconst\
-  \ callLater = require('callLater');\n\nconst mergeObj = (target, source) => {\n\
-  \  for (const key in source) {\n    if (source.hasOwnProperty(key)) target[key]\
-  \ = source[key];\n  }\n  return target;\n};\n\nconst apiVersion = '23.0';\n\nconst\
-  \ singleUserExpectedRequestBody = {\n  payload: {\n    schema: [\n      'DOBD',\n\
-  \      'DOBM',\n      'DOBY',\n      'CT',\n      'COUNTRY',\n      'EMAIL',\n \
-  \     'EXTERN_ID',\n      'FN',\n      'FI',\n      'GEN',\n      'LN',\n      'MADID',\n\
-  \      'PHONE',\n      'ST',\n      'ZIP',\n      'DATA_PROCESSING_OPTIONS',\n \
-  \     'DATA_PROCESSING_OPTIONS_COUNTRY',\n      'DATA_PROCESSING_OPTIONS_STATE'\n\
-  \    ],\n    data: [\n      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
+  \ callLater = require('callLater');\n\nfunction assign() {\n  const target = arguments[0];\n\
+  \  for (let i = 1; i < arguments.length; i++) {\n    for (let key in arguments[i])\
+  \ {\n      target[key] = arguments[i][key];\n    }\n  }\n  return target;\n}\n\n\
+  const EXPECTED_META_API_VERSION = '24.0';\n\nconst EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\
+  \ = {\n  payload: {\n    schema: [\n      'DOBD',\n      'DOBM',\n      'DOBY',\n\
+  \      'CT',\n      'COUNTRY',\n      'EMAIL',\n      'EXTERN_ID',\n      'FN',\n\
+  \      'FI',\n      'GEN',\n      'LN',\n      'MADID',\n      'PHONE',\n      'ST',\n\
+  \      'ZIP',\n      'DATA_PROCESSING_OPTIONS',\n      'DATA_PROCESSING_OPTIONS_COUNTRY',\n\
+  \      'DATA_PROCESSING_OPTIONS_STATE'\n    ],\n    data: [\n      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
   \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n \
   \       '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n  \
   \      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n   \
@@ -1557,50 +1752,76 @@ setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\ncons
   \       'test',\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
   \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n \
   \       '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n  \
-  \      ['LDU'],\n        1,\n        1000\n      ]\n    ]\n  }\n};\n\nconst multipleUsersExpectedRequestBody\
-  \ = {\n  payload: {\n    schema: ['EMAIL', 'PHONE'],\n    data: [\n      [\n   \
-  \     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n    \
-  \    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'\n      ],\n\
-  \      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
+  \      ['LDU'],\n        1,\n        1000\n      ]\n    ]\n  }\n};\n\nconst GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH\
+  \ = (copyMockData) => {\n  const COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\
+  \ = JSON.parse(JSON.stringify(EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH));\n  if\
+  \ (copyMockData.stapeAuthAdAccountsList) COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH.adAccountIds\
+  \ = copyMockData.stapeAuthAdAccountsList.map((adAccount) => adAccount.adAccountId\
+  \ + '');\n  else if (copyMockData.stapeAuthAudiencesList) COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH.audienceIds\
+  \ = copyMockData.stapeAuthAudiencesList.map((audience) => audience.audienceId +\
+  \ '');\n  \n  return COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH;\n};\n\nconst\
+  \ EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH = {\n  payload: {\n    schema: ['EMAIL',\
+  \ 'PHONE'],\n    data: [\n      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
   \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'\n  \
-  \    ]\n    ]\n  }\n};\n\nconst expectedBigQuerySettings = {\n  logBigQueryProjectId:\
-  \ 'logBigQueryProjectId',\n  logBigQueryDatasetId: 'logBigQueryDatasetId',\n  logBigQueryTableId:\
-  \ 'logBigQueryTableId'\n};\n\nconst requiredConsoleKeys = ['Type', 'TraceId', 'Name'];\n\
-  const requiredBqKeys = ['timestamp', 'type', 'trace_id', 'tag_name'];\nconst expectedBqOptions\
-  \ = { ignoreUnknownValues: true };\n\nconst mockData = {\n  logBigQueryProjectId:\
-  \ expectedBigQuerySettings.logBigQueryProjectId,\n  logBigQueryDatasetId: expectedBigQuerySettings.logBigQueryDatasetId,\n\
-  \  logBigQueryTableId: expectedBigQuerySettings.logBigQueryTableId\n};\n\nconst\
-  \ setMockDataByAudienceMethod = (method, objToBeMerged) => {\n  const baseMockData\
-  \ = {\n    useOptimisticScenario: false,\n    userMode: 'single',\n    singleUserIdentifiersList:\
-  \ [\n      { name: 'DOBD', value: 'test' },\n      { name: 'DOBM', value: 'test'\
-  \ },\n      { name: 'DOBY', value: 'test' },\n      { name: 'CT', value: 'test'\
-  \ },\n      { name: 'COUNTRY', value: 'test' },\n      { name: 'EMAIL', value: 'test'\
-  \ },\n      { name: 'EXTERN_ID', value: 'test' },\n      { name: 'FN', value: 'test'\
-  \ },\n      { name: 'FI', value: 'test' },\n      { name: 'GEN', value: 'test' },\n\
-  \      { name: 'LN', value: 'test' },\n      { name: 'MADID', value: 'test' },\n\
-  \      { name: 'PHONE', value: 'test' },\n      { name: 'ST', value: 'test' },\n\
-  \      { name: 'ZIP', value: 'test' }\n    ],\n    enableDataProcessingOptions:\
-  \ true,\n    singleUserDataProcessingOptionsList: [\n      { name: 'DATA_PROCESSING_OPTIONS_COUNTRY',\
-  \ value: '1' },\n      { name: 'DATA_PROCESSING_OPTIONS_STATE', value: '1000' }\n\
-  \    ],\n    \n    // Multiple Users. It won't be used by the single user case.\
-  \ It's here to make testing easier.\n    multipleUsersSchema: ['EMAIL', 'PHONE'],\n\
-  \    multipleUsersAudienceMembers: [['test', 'test'], ['test', 'test']],\n    \n\
-  \    adStorageConsent: 'optional',\n    logType: 'debug',\n    bigQueryLogType:\
-  \ 'no',\n  };\n  \n  const methods = {\n    ingest: {\n      authFlow: 'own',\n\
-  \      audienceAction: 'ingest',\n      ownAuthAudiencesList: [\n        {\n   \
-  \       audienceId: 'expectedAudienceId',\n          accessToken:\n            'expectedAccessToken'\n\
-  \        }\n      ]\n    },\n    remove: {\n      authFlow: 'own',\n      audienceAction:\
-  \ 'remove',\n      ownAuthAudiencesList: [\n        {\n          audienceId: 'expectedAudienceId',\n\
-  \          accessToken:\n            'expectedAccessToken'\n        }\n      ]\n\
-  \    },\n    removeFromAll: {\n      authFlow: 'own',\n      audienceAction: 'removeFromAll',\n\
-  \      ownAuthAdAccountsList: [\n        {\n          adAccountId: 'expectedAdAccountId',\n\
-  \          accessToken: 'expectedAccessToken'\n        }\n      ]\n    }\n  };\n\
-  \  \n  return mergeObj(\n    mockData, \n    mergeObj(\n      methods[method], \n\
-  \      mergeObj(baseMockData, objToBeMerged || {})\n    )\n  );\n};\n\nconst setGetAllEventData\
-  \ = (objToBeMerged) => {\n  mock('getAllEventData', mergeObj({\n    'x-ga-protocol_version':\
-  \ '2',\n    'x-ga-measurement_id': 'G-123ABC',\n    'x-ga-gtm_version': '45je55e1za200',\n\
-  \    'x-ga-page_id': 1747422523211,\n    'x-ga-gcd': '13l3l3l3l1l1',\n    'x-ga-npa':\
-  \ '0',\n    'x-ga-dma': '0',\n    'x-ga-mp2-tag_exp':\n      '101509157~103116025~103130498~103130500~103136993~103136995~103200001~103207802~103211513~103233427~103252644~103252646~103263073~103301114~103301116',\n\
+  \    ],\n      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
+  \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'\n  \
+  \    ]\n    ]\n  }\n};\n\nconst GET_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_STAPE_AUTH\
+  \ = (copyMockData) => {\n  const COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH\
+  \ = JSON.parse(JSON.stringify(EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH));\n\
+  \  if (copyMockData.stapeAuthAdAccountsList) COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH.adAccountIds\
+  \ = copyMockData.stapeAuthAdAccountsList.map((adAccount) => adAccount.adAccountId\
+  \ + '');\n  else if (copyMockData.stapeAuthAudiencesList) COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH.audienceIds\
+  \ = copyMockData.stapeAuthAudiencesList.map((audience) => audience.audienceId +\
+  \ '');\n  \n  return COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH;\n};\n\n\
+  const expectedBigQuerySettings = {\n  logBigQueryProjectId: 'logBigQueryProjectId',\n\
+  \  logBigQueryDatasetId: 'logBigQueryDatasetId',\n  logBigQueryTableId: 'logBigQueryTableId'\n\
+  };\n\nconst requiredConsoleKeys = ['Type', 'TraceId', 'Name'];\nconst requiredBqKeys\
+  \ = ['timestamp', 'type', 'trace_id', 'tag_name'];\nconst expectedBqOptions = {\
+  \ ignoreUnknownValues: true };\n\nconst mockData = {\n  logBigQueryProjectId: expectedBigQuerySettings.logBigQueryProjectId,\n\
+  \  logBigQueryDatasetId: expectedBigQuerySettings.logBigQueryDatasetId,\n  logBigQueryTableId:\
+  \ expectedBigQuerySettings.logBigQueryTableId\n};\n\nconst cleanup = () => {\n \
+  \ mock('getAllEventData', {});\n  mock('getCookieValues', []);\n};\n\nconst setMockDataByAudienceMethodAndAuthType\
+  \ = (eventType, authType, objToBeMerged) => {\n  const mockDataByAuthTypeAndEventType\
+  \ = {\n    stape: {\n      ingest: {\n        authFlow: 'stape',\n        audienceAction:\
+  \ 'ingest',\n        stapeAuthAudiencesList: [\n          {\n            audienceId:\
+  \ 'expectedAudienceId'\n          }\n        ]\n      },\n      remove: {\n    \
+  \    authFlow: 'stape',\n        audienceAction: 'remove',\n        stapeAuthAudiencesList:\
+  \ [\n          {\n            audienceId: 'expectedAudienceId'\n          }\n  \
+  \      ]\n      },\n      removeFromAll: {\n        authFlow: 'stape',\n       \
+  \ audienceAction: 'removeFromAll',\n        stapeAuthAdAccountsList: [\n       \
+  \   {\n            adAccountId: 'expectedAdAccountId'\n          }\n        ]\n\
+  \      }\n    },\n    own: {\n      ingest: {\n        authFlow: 'own',\n      \
+  \  audienceAction: 'ingest',\n        ownAuthAudiencesList: [\n          {\n   \
+  \         audienceId: 'expectedAudienceId',\n            accessToken:\n        \
+  \      'expectedAccessToken'\n          }\n        ]\n      },\n      remove: {\n\
+  \        authFlow: 'own',\n        audienceAction: 'remove',\n        ownAuthAudiencesList:\
+  \ [\n          {\n            audienceId: 'expectedAudienceId',\n            accessToken:\n\
+  \              'expectedAccessToken'\n          }\n        ]\n      },\n      removeFromAll:\
+  \ {\n        authFlow: 'own',\n        audienceAction: 'removeFromAll',\n      \
+  \  ownAuthAdAccountsList: [\n          {\n            adAccountId: 'expectedAdAccountId',\n\
+  \            accessToken: 'expectedAccessToken'\n          }\n        ]\n      }\n\
+  \    }\n  };\n  \n    \n  const baseMockData = {\n    useOptimisticScenario: false,\n\
+  \    userMode: 'single',\n    singleUserIdentifiersList: [\n      { name: 'DOBD',\
+  \ value: 'test' },\n      { name: 'DOBM', value: 'test' },\n      { name: 'DOBY',\
+  \ value: 'test' },\n      { name: 'CT', value: 'test' },\n      { name: 'COUNTRY',\
+  \ value: 'test' },\n      { name: 'EMAIL', value: 'test' },\n      { name: 'EXTERN_ID',\
+  \ value: 'test' },\n      { name: 'FN', value: 'test' },\n      { name: 'FI', value:\
+  \ 'test' },\n      { name: 'GEN', value: 'test' },\n      { name: 'LN', value: 'test'\
+  \ },\n      { name: 'MADID', value: 'test' },\n      { name: 'PHONE', value: 'test'\
+  \ },\n      { name: 'ST', value: 'test' },\n      { name: 'ZIP', value: 'test' }\n\
+  \    ],\n    enableDataProcessingOptions: true,\n    singleUserDataProcessingOptionsList:\
+  \ [\n      { name: 'DATA_PROCESSING_OPTIONS_COUNTRY', value: '1' },\n      { name:\
+  \ 'DATA_PROCESSING_OPTIONS_STATE', value: '1000' }\n    ],\n    \n    // Multiple\
+  \ Users. It won't be used by the single user case. It's here to make testing easier.\n\
+  \    multipleUsersSchema: ['EMAIL', 'PHONE'],\n    multipleUsersAudienceMembers:\
+  \ [['test', 'test'], ['test', 'test']],\n    \n    adStorageConsent: 'optional',\n\
+  \    logType: 'debug',\n    bigQueryLogType: 'no',\n  };\n  \n  return assign(JSON.parse(JSON.stringify(mockData)),\
+  \ mockDataByAuthTypeAndEventType[authType][eventType], baseMockData, objToBeMerged\
+  \ || {});\n};\n\nconst setGetAllEventData = (objToBeMerged) => {\n  mock('getAllEventData',\
+  \ assign({\n    'x-ga-protocol_version': '2',\n    'x-ga-measurement_id': 'G-123ABC',\n\
+  \    'x-ga-gtm_version': '45je55e1za200',\n    'x-ga-page_id': 1747422523211,\n\
+  \    'x-ga-gcd': '13l3l3l3l1l1',\n    'x-ga-npa': '0',\n    'x-ga-dma': '0',\n \
+  \   'x-ga-mp2-tag_exp':\n      '101509157~103116025~103130498~103130500~103136993~103136995~103200001~103207802~103211513~103233427~103252644~103252646~103263073~103301114~103301116',\n\
   \    client_id: 'AUJctU7H7hBB/aMuhE4pKwGu5DWDdklg5abyyyn8i/I=.1747154479',\n   \
   \ 'x-ga-ecid': '1294673677',\n    language: 'en-us',\n    screen_resolution: '1512x982',\n\
   \    event_location: { country: 'BR', region: 'SP' },\n    event_id: '101509157~103116025~103130498',\n\
@@ -1630,8 +1851,11 @@ setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\ncons
   \ === 'function') {\n    callback(200);\n  } else {\n    requestBody = requestOptions;\n\
   \    requestOptions = callback;\n    return Promise.create((resolve, reject) =>\
   \ {\n      resolve({ statusCode: 200 });\n    });  \n  }\n});\n\nmock('getRequestHeader',\
-  \ (header) => {\n  if (header === 'trace-id') return 'expectedTraceId';\n});\n\n\
-  mock('getTimestampMillis', 1747945830456);"
+  \ (header) => {\n  if (header === 'trace-id') return 'expectedTraceId';\n  else\
+  \ if (header === 'x-gtm-identifier') return 'expectedXGtmIdentifier';\n  else if\
+  \ (header === 'x-gtm-default-domain') return 'expectedXGtmDefaultDomain';\n  else\
+  \ if (header === 'x-gtm-api-key') return 'expectedXGtmApiKey';\n});\n\nmock('getTimestampMillis',\
+  \ 1747945830456);"
 
 
 ___NOTES___

@@ -1,5 +1,3 @@
-/// <reference path="./server-gtm-sandboxed-apis.d.ts" />
-
 const BigQuery = require('BigQuery');
 const encodeUriComponent = require('encodeUriComponent');
 const getAllEventData = require('getAllEventData');
@@ -20,15 +18,10 @@ const sha256Sync = require('sha256Sync');
 ==============================================================================*/
 
 const eventData = getAllEventData();
-
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
+const apiVersion = '24.0';
 
-if (!isConsentGivenOrNotRequired(data, eventData)) {
-  return data.gtmOnSuccess();
-}
-
-const url = eventData.page_location || getRequestHeader('referer');
-if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) {
+if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
 }
 
@@ -47,7 +40,7 @@ if (invalidFields) {
   return data.gtmOnFailure();
 }
 
-sendRequests(data, mappedData);
+sendRequests(data, mappedData, apiVersion);
 
 if (useOptimisticScenario) {
   return data.gtmOnSuccess();
@@ -178,40 +171,79 @@ function validateMappedData(mappedData) {
 }
 
 function getDestinations(data) {
-  const authFlow = data.authFlow === 'own';
-  const audiencesList = authFlow ? data.ownAuthAudiencesList : data.stapeAuthAudiencesList;
-  const adAccountsList = authFlow ? data.ownAuthAdAccountsList : data.stapeAuthAdAccountsList;
-
-  return data.audienceAction === 'removeFromAll' ? adAccountsList : audiencesList;
+  const ownAuthFlow = data.authFlow === 'own';
+  const action = data.audienceAction;
+  if (action === 'ingest' || action === 'remove') {
+    return ownAuthFlow
+      ? data.ownAuthAudiencesList
+      : [
+          {
+            audienceIds: data.stapeAuthAudiencesList.map((audience) => {
+              return makeString(audience.audienceId);
+            })
+          }
+        ];
+  } else if (action === 'removeFromAll') {
+    return ownAuthFlow
+      ? data.ownAuthAdAccountsList
+      : [
+          {
+            adAccountIds: data.stapeAuthAdAccountsList.map((adAccount) => {
+              return makeString(adAccount.adAccountId);
+            })
+          }
+        ];
+  }
 }
 
-function generateRequestUrl(data, config) {
-  const apiVersion = '23.0';
-  const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
+function generateRequestUrl(data, config, apiVersion) {
+  const getAudiencePathByActionAndAuthFlow = (data) => {
+    const authFlow = data.authFlow;
+    const action = data.audienceAction;
+    switch (action) {
+      case 'ingest':
+        if (authFlow === 'own') return '/' + enc(config.audienceId) + '/users';
+        return '/audiences/users-add';
+      case 'remove':
+        if (authFlow === 'own') return '/' + enc(config.audienceId) + '/users';
+        return '/audiences/users-remove';
+      case 'removeFromAll':
+        if (authFlow === 'own') return '/act_' + enc(config.adAccountId) + '/usersofanyaudience';
+        return '/adaccounts/audiences-users-remove';
+    }
+  };
 
-  let audiencePath;
-  switch (data.audienceAction) {
-    case 'ingest':
-    case 'remove':
-      audiencePath = '/' + enc(config.audienceId) + '/users';
-      break;
-    case 'removeFromAll':
-      audiencePath = '/act_' + enc(config.adAccountId) + '/usersofanyaudience';
-      break;
+  if (data.authFlow === 'own') {
+    const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
+    const audiencePath = getAudiencePathByActionAndAuthFlow(data);
+    const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
+    return requestUrl;
   }
 
-  const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
+  const containerIdentifier = getRequestHeader('x-gtm-identifier');
+  const defaultDomain = getRequestHeader('x-gtm-default-domain');
+  const containerApiKey = getRequestHeader('x-gtm-api-key');
 
-  return requestUrl;
+  const audiencePath = getAudiencePathByActionAndAuthFlow(data);
+  return (
+    'https://' +
+    enc(containerIdentifier) +
+    '.' +
+    enc(defaultDomain) +
+    '/stape-api/' +
+    enc(containerApiKey) +
+    '/v1/meta' +
+    audiencePath
+  );
 }
 
-function generateRequestOptions(data) {
-  const requestMethodByAudienceAction = {
-    ingest: 'POST',
-    remove: 'DELETE',
-    removeFromAll: 'DELETE'
+function generateRequestOptions(data, apiVersion) {
+  const requestMethodByActionAndAuthFlow = {
+    ingest: { own: 'POST', stape: 'POST' },
+    remove: { own: 'DELETE', stape: 'POST' },
+    removeFromAll: { own: 'DELETE', stape: 'POST' }
   };
-  const requestMethod = requestMethodByAudienceAction[data.audienceAction];
+  const requestMethod = requestMethodByActionAndAuthFlow[data.audienceAction][data.authFlow];
 
   const options = {
     method: requestMethod,
@@ -220,19 +252,37 @@ function generateRequestOptions(data) {
     }
   };
 
+  if (data.authFlow === 'stape') {
+    options.headers['x-meta-api-version'] = apiVersion;
+    options.timeout = 20000;
+  }
+
   return options;
 }
 
-function sendRequests(data, mappedData) {
+function sendRequests(data, mappedData, apiVersion) {
   const destinations = getDestinations(data);
-  const requestOptions = generateRequestOptions(data);
+  const requestOptions = generateRequestOptions(data, apiVersion);
 
-  const requests = destinations.map((d) => {
-    const requestUrl = generateRequestUrl(data, {
-      audienceId: d.audienceId,
-      adAccountId: d.adAccountId,
-      accessToken: d.accessToken
-    });
+  const requests = destinations.map((destination) => {
+    const config =
+      data.authFlow === 'own'
+        ? {
+            audienceId: destination.audienceId,
+            adAccountId: destination.adAccountId,
+            accessToken: destination.accessToken
+          }
+        : undefined;
+    const requestUrl = generateRequestUrl(data, config, apiVersion);
+
+    // Not part of the Meta API spec. Only used for Stape Connection.
+    if (data.authFlow === 'stape') {
+      if (data.audienceAction === 'ingest' || data.audienceAction === 'remove') {
+        mappedData.audienceIds = destination.audienceIds;
+      } else if (data.audienceAction === 'removeFromAll') {
+        mappedData.adAccountIds = destination.adAccountIds;
+      }
+    }
 
     log({
       Name: 'MetaCustomAudiences',
@@ -243,31 +293,46 @@ function sendRequests(data, mappedData) {
       RequestBody: mappedData
     });
 
-    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedData));
-  });
+    let message = '';
+    const audienceIds = destination.audienceId || destination.audienceIds;
+    const adAccountIds = destination.adAccountId || destination.adAccountIds;
+    if (audienceIds) message = ' Audience ID(s): ' + audienceIds;
+    else if (adAccountIds) message = ' Ad Account ID(s): ' + adAccountIds;
 
-  Promise.all(requests)
-    .then((results) => {
-      let someRequestFailed = false;
-
-      results.forEach((result) => {
+    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedData))
+      .then((result) => {
         log({
           Name: 'MetaCustomAudiences',
           Type: 'Response',
           EventName: data.audienceAction,
           ResponseStatusCode: result.statusCode,
           ResponseHeaders: result.headers,
-          ResponseBody: result.body
+          ResponseBody: result.body,
+          Message: message
         });
 
-        if (result.statusCode < 200 || result.statusCode >= 300) {
-          someRequestFailed = true;
-        }
-      });
+        if (result.statusCode < 200 || result.statusCode >= 300) return false;
+        return true;
+      })
+      .catch((result) => {
+        log({
+          Name: 'MetaCustomAudiences',
+          Type: 'Message',
+          EventName: data.audienceAction,
+          Message: 'Request failed or timed out.' + message,
+          Reason: JSON.stringify(result)
+        });
 
+        return false;
+      });
+  });
+
+  Promise.all(requests)
+    .then((results) => {
       if (!useOptimisticScenario) {
-        if (someRequestFailed) data.gtmOnFailure();
-        else data.gtmOnSuccess();
+        const someRequestFailed = results.some((success) => !success);
+        if (someRequestFailed) return data.gtmOnFailure();
+        else return data.gtmOnSuccess();
       }
     })
     .catch((result) => {
@@ -275,17 +340,26 @@ function sendRequests(data, mappedData) {
         Name: 'MetaCustomAudiences',
         Type: 'Message',
         EventName: data.audienceAction,
-        Message: 'Some request failed or timed out.',
+        Message: 'Something went wrong.',
         Reason: JSON.stringify(result)
       });
 
-      if (!useOptimisticScenario) data.gtmOnFailure();
+      if (!useOptimisticScenario) return data.gtmOnFailure();
     });
 }
 
 /*==============================================================================
   Helpers
 ==============================================================================*/
+
+function shouldExitEarly(data, eventData) {
+  if (!isConsentGivenOrNotRequired(data, eventData)) return true;
+
+  const url = eventData.page_location || getRequestHeader('referer');
+  if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) return true;
+
+  return false;
+}
 
 function enc(data) {
   return encodeUriComponent(makeString(data || ''));
