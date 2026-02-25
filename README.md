@@ -78,7 +78,7 @@ A Meta App is required to grant your system the correct permissions.
 6.  Click **Create app**.
 7.  Once the app is created, go to **"Add Products"** and enable the **Marketing API**.
 
-> If you are not able to create it, then you must already have a System User created and your account limit has been reached, or you don't have the required permissions (you must by Admin of the Business Manager ccount).
+> If you are not able to create it, then you must already have a System User created and your account limit has been reached, or you don't have the required permissions (you must be Admin of the Business Manager account).
 
 ### Part 2: Generate the System User Token
 
@@ -89,7 +89,7 @@ Follow these steps within your [Meta Business Settings](https://business.faceboo
     * Click **Add**.
     * Enter a name for your System User and assign it the **Employee** role (Admin is not required).
 
-> If you are not able to create it, then you must already have a System User created and your account limit has been reached, or you don't have the required permissions (you must by Admin of the Business Manager ccount).
+> If you are not able to create it, then you must already have a System User created and your account limit has been reached, or you don't have the required permissions (you must be Admin of the Business Manager account).
 
 2.  **Assign Assets to the System User**:
     The System User needs permission to access both the Ad Account and the App.
