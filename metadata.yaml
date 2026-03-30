@@ -1,6 +1,8 @@
 homepage: 'https://stape.io/'
 documentation: 'https://github.com/stape-io/meta-custom-audiences-tag'
 versions:
+  - sha: b2671d619f1af9ea96484c232b0027449b9a75f3
+    changeNotes: Added support for Stape Meta Connection as an authentication method. Update API to v25.
   - sha: 8e6db1fbc035b68509193358e6d19ae75633ef6e
     changeNotes: Update template logo and perform minor UI improvements.
   - sha: ce332b83e7052767a975712dd017a2c2dd7d9985
