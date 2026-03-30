@@ -704,7 +704,7 @@ const sha256Sync = require('sha256Sync');
 
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
-const apiVersion = '24.0';
+const apiVersion = '25.0';
 
 if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
@@ -1734,7 +1734,7 @@ setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\ncons
   \ callLater = require('callLater');\n\nfunction assign() {\n  const target = arguments[0];\n\
   \  for (let i = 1; i < arguments.length; i++) {\n    for (let key in arguments[i])\
   \ {\n      target[key] = arguments[i][key];\n    }\n  }\n  return target;\n}\n\n\
-  const EXPECTED_META_API_VERSION = '24.0';\n\nconst EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\
+  const EXPECTED_META_API_VERSION = '25.0';\n\nconst EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\
   \ = {\n  payload: {\n    schema: [\n      'DOBD',\n      'DOBM',\n      'DOBY',\n\
   \      'CT',\n      'COUNTRY',\n      'EMAIL',\n      'EXTERN_ID',\n      'FN',\n\
   \      'FI',\n      'GEN',\n      'LN',\n      'MADID',\n      'PHONE',\n      'ST',\n\

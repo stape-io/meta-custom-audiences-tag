@@ -19,7 +19,7 @@ const sha256Sync = require('sha256Sync');
 
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
-const apiVersion = '24.0';
+const apiVersion = '25.0';
 
 if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
