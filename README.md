@@ -128,6 +128,8 @@ A System User from one Business Manager (e.g., an Agency) cannot directly access
 
 ## Useful resources
 
+- [Helpdesk: How to configure the Meta Custom Audience tag](https://stape.io/helpdesk/documentation/configure-meta-custom-audience-tag)
+- [Meta Custom Audiences guide: how to create and automate](https://stape.io/blog/facebook-custom-audiences)
 - [About the Custom Audiences API](https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences)
 - [Custom Audiences API reference](https://developers.facebook.com/docs/marketing-api/reference/custom-audience/users/)
 - [Normalization Guidelines](https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/#hash)
