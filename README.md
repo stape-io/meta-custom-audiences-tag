@@ -137,3 +137,6 @@ A System User from one Business Manager (e.g., an Agency) cannot directly access
 ## Open Source
 
 The **Meta Custom Audiences Tag for GTM Server-Side** is developed and maintained by the [Stape Team](https://stape.io/) under the Apache 2.0 license.
+
+### GTM Gallery Status
+🟢 [Listed](https://tagmanager.google.com/gallery/#/owners/stape-io/templates/meta-custom-audiences-tag)
