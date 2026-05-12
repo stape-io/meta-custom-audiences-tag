@@ -116,6 +116,22 @@ ___TEMPLATE_PARAMETERS___
                     "type": "NON_EMPTY"
                   }
                 ]
+              },
+              {
+                "defaultValue": false,
+                "displayName": "Value-based Audience",
+                "name": "isValueBased",
+                "type": "SELECT",
+                "selectItems": [
+                  {
+                    "value": false,
+                    "displayValue": "False"
+                  },
+                  {
+                    "value": true,
+                    "displayValue": "True"
+                  }
+                ]
               }
             ],
             "valueValidators": [
@@ -124,7 +140,7 @@ ___TEMPLATE_PARAMETERS___
               }
             ],
             "newRowButtonText": "Add Audience",
-            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \n\u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \n\u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \n\u003cli\u003eA Meta App: \n\u003cul\u003e \n\u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \n\u003cli\u003eConfigured for the \u003ci\u003eMeasure ad performance data with Marketing API\u003c/i\u003e use case\u003c/li\u003e \n\u003c/ul\u003e \n\u003c/li\u003e \n\u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \n\u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \n\u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \n\u003c/ul\u003e \n\u003c/li\u003e \n\u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag/tree/add-stape-connection?tab\u003dreadme-ov-file#generating-a-system-user-access-token-for-own-meta-credentials-authentication-method\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.",
+            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eAccess Token\u003c/b\u003e: A System User access token with the \u003ci\u003eads_management\u003c/i\u003e permission. This token must be associated with the Ad Account that owns the audience.\n\u003cbr/\u003e\nTo generate and use a valid access token, you’ll need:\n\u003cul\u003e \n\u003cli\u003eA Meta Business Manager account.\u003c/li\u003e \u003cli\u003eAdmin access to that Business Manager.\u003c/li\u003e \n\u003cli\u003eAn Ad Account connected to the Business Manager.\u003c/li\u003e \n\u003cli\u003eA Meta App: \n\u003cul\u003e \n\u003cli\u003eLinked to the same Business Manager\u003c/li\u003e \n\u003cli\u003eConfigured for the \u003ci\u003eMeasure ad performance data with Marketing API\u003c/i\u003e use case\u003c/li\u003e \n\u003c/ul\u003e \n\u003c/li\u003e \n\u003cli\u003eA System User (Employee role is sufficient) with: \u003cul\u003e \n\u003cli\u003e\u003ci\u003eManage campaigns (ads)\u003c/i\u003e permission for the Ad Account\u003c/li\u003e \n\u003cli\u003e\u003ci\u003eDevelop app\u003c/i\u003e permission for the Meta App\u003c/li\u003e \n\u003c/ul\u003e \n\u003c/li\u003e \n\u003c/ul\u003e\n\u003ca href\u003d\"https://github.com/stape-io/meta-custom-audiences-tag/tree/add-stape-connection?tab\u003dreadme-ov-file#generating-a-system-user-access-token-for-own-meta-credentials-authentication-method\" target\u003d\"_blank\"\u003eLearn more\u003c/a\u003e.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eValue-based Audience\u003c/b\u003e: Whether this Audience is a Value-Based Audience. \u003ca href\u003d\"https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/value-based-lookalike-audiences\"\u003eLearn more\u003c/a\u003e.\n\u003cbr/\u003e\nThe template will pass the \u003ci\u003eLookalike Value\u003c/i\u003e as one of the identifiers of the Audience Members if the Audience is value-based.\nAny \u003ci\u003eLookalike Value\u003c/i\u003e passed to non-value-based audiences will not be forwarded to the Audience.",
             "enablingConditions": [
               {
                 "paramName": "audienceAction",
@@ -221,6 +237,22 @@ ___TEMPLATE_PARAMETERS___
                 ],
                 "valueHint": "1234567890",
                 "isUnique": true
+              },
+              {
+                "defaultValue": false,
+                "displayName": "Value-based Audience",
+                "name": "isValueBased",
+                "type": "SELECT",
+                "selectItems": [
+                  {
+                    "value": false,
+                    "displayValue": "False"
+                  },
+                  {
+                    "value": true,
+                    "displayValue": "True"
+                  }
+                ]
               }
             ],
             "valueValidators": [
@@ -229,7 +261,7 @@ ___TEMPLATE_PARAMETERS___
               }
             ],
             "newRowButtonText": "Add Audience",
-            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\nMake sure the Meta Business Manager account you connect to Stape has access to the Audience.",
+            "help": "\u003cb\u003eAudience ID\u003c/b\u003e: The ID of the audience you want to interact with. You can find this in the Audiences panel within Ads Manager.\n\u003cbr/\u003e\u003cbr/\u003e\nMake sure the Meta Business Manager account you connect to Stape has access to the Audience.\n\u003cbr/\u003e\u003cbr/\u003e\n\u003cb\u003eValue-based Audience\u003c/b\u003e: Whether this Audience is a Value-Based Audience. \u003ca href\u003d\"https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/value-based-lookalike-audiences\"\u003eLearn more\u003c/a\u003e.\n\u003cbr/\u003e\nThe template will pass the \u003ci\u003eLookalike Value\u003c/i\u003e as one of the identifiers of the Audience Members if the Audience is value-based.\nAny \u003ci\u003eLookalike Value\u003c/i\u003e passed to non-value-based audiences will not be forwarded to the Audience.",
             "enablingConditions": [
               {
                 "paramName": "audienceAction",
@@ -411,6 +443,10 @@ ___TEMPLATE_PARAMETERS___
                   {
                     "value": "ZIP",
                     "displayValue": "ZIP/Postal Code"
+                  },
+                  {
+                    "value": "LOOKALIKE_VALUE",
+                    "displayValue": "Lookalike Value"
                   }
                 ],
                 "isUnique": true,
@@ -438,7 +474,7 @@ ___TEMPLATE_PARAMETERS___
               }
             ],
             "newRowButtonText": "Add Identifier",
-            "help": "For each Identifier field, specify a single value or an array of values. \u003cbr/\u003e Each item can be already SHA256 Hex hashed or not (the tag will hash it automatically). \u003cbr/\u003e The only execption is the \u003ci\u003eMobile Advertiser ID (IDFA/GAID)\u003c/i\u003e which must \u003cb\u003enot\u003c/b\u003e be hashed. \u003cbr/\u003e\u003cbr/\u003e If already SHA256 hashed, make sure to follow these \u003ca href\u003d\"https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/#hash\"\u003enormalization guidelines\u003c/a\u003e before applying the hash."
+            "help": "For each Identifier field, specify a single value or an array of values. \n\u003cbr/\u003e\nEach item can be already SHA256 Hex hashed or not (the tag will hash it automatically). \n\u003cbr/\u003e\nThe exceptions are the \u003ci\u003eMobile Advertiser ID (IDFA/GAID)\u003c/i\u003e and  \u003ci\u003eLookalike Value\u003c/i\u003e which must \u003cb\u003enot\u003c/b\u003e be hashed. \n\u003cbr/\u003e\u003cbr/\u003e\nIf already SHA256 hashed, make sure to follow these \u003ca href\u003d\"https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/#hash\"\u003enormalization guidelines\u003c/a\u003e before applying the hash.\n\u003cbr/\u003e\u003cbr/\u003e\nThe template will pass the \u003ci\u003eLookalike Value\u003c/i\u003e (\u003ca href\u003d\"https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/value-based-lookalike-audiences\"\u003elearn more\u003c/a\u003e) as one of the identifiers of the Audience Members if the Audience is value-based.\nAny \u003ci\u003eLookalike Value\u003c/i\u003e passed to non-value-based audiences will not be forwarded to the Audience."
           },
           {
             "type": "SELECT",
@@ -693,6 +729,7 @@ const getType = require('getType');
 const JSON = require('JSON');
 const logToConsole = require('logToConsole');
 const makeInteger = require('makeInteger');
+const makeNumber = require('makeNumber');
 const makeString = require('makeString');
 const Promise = require('Promise');
 const Object = require('Object');
@@ -704,28 +741,29 @@ const sha256Sync = require('sha256Sync');
 
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
-const apiVersion = '25.0';
+const API_VERSION = '25.0';
 
 if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
 }
 
 const mappedData = getDataForAudienceDataUpload(data);
+const destinations = getDestinations(data);
 
-const invalidFields = validateMappedData(mappedData);
+const invalidFields = validateMappedData(data, destinations, mappedData);
 if (invalidFields) {
   log({
     Name: 'MetaCustomAudiences',
     Type: 'Message',
     EventName: data.audienceAction,
-    Message: 'Request was not sent.',
+    Message: '🛑 [ERROR] Request was not sent.',
     Reason: invalidFields
   });
 
   return data.gtmOnFailure();
 }
 
-sendRequests(data, mappedData, apiVersion);
+sendRequests(data, destinations, mappedData);
 
 if (useOptimisticScenario) {
   return data.gtmOnSuccess();
@@ -791,7 +829,8 @@ function hashDataIfNeeded(mappedData) {
     DATA_PROCESSING_OPTIONS: true,
     DATA_PROCESSING_OPTIONS_COUNTRY: true,
     DATA_PROCESSING_OPTIONS_STATE: true,
-    MADID: true
+    MADID: true,
+    LOOKALIKE_VALUE: true
   };
   const processIdentifier = (schema, identifier, index, identifiersArray) => {
     if (noHashIdentifiers[schema]) return;
@@ -835,7 +874,7 @@ function getDataForAudienceDataUpload(data) {
   return mappedData;
 }
 
-function validateMappedData(mappedData) {
+function validateMappedData(data, destinations, mappedData) {
   if (!mappedData.payload.schema || mappedData.payload.schema.length === 0) {
     return 'The Audience Members Identifiers Schema must be specified.';
   }
@@ -853,35 +892,67 @@ function validateMappedData(mappedData) {
       mappedData.payload.data.length
     );
   }
+
+  const lookalikeValueIndex = mappedData.payload.schema.indexOf('LOOKALIKE_VALUE');
+  const lookalikeValueInSchema = lookalikeValueIndex !== -1;
+
+  const lookalikeIsTheOnlyIdentifier =
+    lookalikeValueInSchema && mappedData.payload.schema.length === 1;
+  if (lookalikeIsTheOnlyIdentifier) {
+    return 'Lookalike Value cannot be the only identifier in the schema.';
+  }
+
+  const action = data.audienceAction;
+  if (action === 'ingest' || action === 'remove') {
+    const someAudienceIsValueBased = destinations.some((destination) => destination.isValueBased);
+
+    if (someAudienceIsValueBased) {
+      const lookalikeValueIsInvalid = mappedData.payload.data.some((audienceMember) => {
+        const lookalikeValue = makeNumber(audienceMember[lookalikeValueIndex]);
+        return !isValidValue(lookalikeValue);
+      });
+      if (!lookalikeValueInSchema || lookalikeValueIsInvalid) {
+        return 'Some Audience is Lookalike but the Lookalike Value is invalid.';
+      }
+    }
+  }
 }
 
 function getDestinations(data) {
   const ownAuthFlow = data.authFlow === 'own';
   const action = data.audienceAction;
   if (action === 'ingest' || action === 'remove') {
-    return ownAuthFlow
-      ? data.ownAuthAudiencesList
-      : [
-          {
-            audienceIds: data.stapeAuthAudiencesList.map((audience) => {
-              return makeString(audience.audienceId);
-            })
-          }
-        ];
+    return ownAuthFlow ? data.ownAuthAudiencesList : data.stapeAuthAudiencesList;
   } else if (action === 'removeFromAll') {
-    return ownAuthFlow
-      ? data.ownAuthAdAccountsList
-      : [
-          {
-            adAccountIds: data.stapeAuthAdAccountsList.map((adAccount) => {
-              return makeString(adAccount.adAccountId);
-            })
-          }
-        ];
+    return ownAuthFlow ? data.ownAuthAdAccountsList : data.stapeAuthAdAccountsList;
   }
 }
 
-function generateRequestUrl(data, config, apiVersion) {
+function transformDestinationsForStapeAuthFlow(data, destinations) {
+  const action = data.audienceAction;
+  if (action === 'ingest' || action === 'remove') {
+    const transformedDestinations = destinations.reduce((acc, curr) => {
+      const position = curr.isValueBased ? 1 : 0;
+      acc[position] = acc[position] || {
+        isValueBased: curr.isValueBased ? true : false,
+        audienceIds: []
+      };
+      acc[position].audienceIds.push(makeString(curr.audienceId));
+      return acc;
+    }, {});
+    return Object.values(transformedDestinations);
+  } else if (action === 'removeFromAll') {
+    return [
+      {
+        adAccountIds: destinations.map((adAccount) => {
+          return makeString(adAccount.adAccountId);
+        })
+      }
+    ];
+  }
+}
+
+function generateRequestUrl(data, config) {
   const getAudiencePathByActionAndAuthFlow = (data) => {
     const authFlow = data.authFlow;
     const action = data.audienceAction;
@@ -899,7 +970,7 @@ function generateRequestUrl(data, config, apiVersion) {
   };
 
   if (data.authFlow === 'own') {
-    const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
+    const baseUrl = 'https://graph.facebook.com/v' + API_VERSION;
     const audiencePath = getAudiencePathByActionAndAuthFlow(data);
     const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
     return requestUrl;
@@ -922,7 +993,7 @@ function generateRequestUrl(data, config, apiVersion) {
   );
 }
 
-function generateRequestOptions(data, apiVersion) {
+function generateRequestOptions(data) {
   const requestMethodByActionAndAuthFlow = {
     ingest: { own: 'POST', stape: 'POST' },
     remove: { own: 'DELETE', stape: 'POST' },
@@ -938,18 +1009,38 @@ function generateRequestOptions(data, apiVersion) {
   };
 
   if (data.authFlow === 'stape') {
-    options.headers['x-meta-api-version'] = apiVersion;
+    options.headers['x-meta-api-version'] = API_VERSION;
     options.timeout = 20000;
   }
 
   return options;
 }
 
-function sendRequests(data, mappedData, apiVersion) {
-  const destinations = getDestinations(data);
-  const requestOptions = generateRequestOptions(data, apiVersion);
+function sendRequests(data, destinations, mappedData) {
+  const requestOptions = generateRequestOptions(data);
+
+  if (data.authFlow === 'stape') {
+    destinations = transformDestinationsForStapeAuthFlow(data, destinations);
+  }
+
+  const someAudienceIsNotValueBased = destinations.some((destination) => !destination.isValueBased);
+  const lookalikeValueIndex = mappedData.payload.schema.indexOf('LOOKALIKE_VALUE');
+  const lookalikeValueInSchema = lookalikeValueIndex !== -1;
+  // Discard LOOKALIKE_VALUE from the payload for non-value-based audiences.
+  let mappedDataWithoutLookalikeValue;
+  if (someAudienceIsNotValueBased && lookalikeValueInSchema) {
+    mappedDataWithoutLookalikeValue = JSON.parse(JSON.stringify(mappedData));
+    mappedDataWithoutLookalikeValue.payload.schema.splice(lookalikeValueIndex, 1);
+    mappedDataWithoutLookalikeValue.payload.data.forEach((audienceMember) => {
+      audienceMember.splice(lookalikeValueIndex, 1);
+    });
+  }
 
   const requests = destinations.map((destination) => {
+    const mappedDataForDestination =
+      !destination.isValueBased && lookalikeValueInSchema
+        ? mappedDataWithoutLookalikeValue
+        : mappedData;
     const config =
       data.authFlow === 'own'
         ? {
@@ -958,14 +1049,14 @@ function sendRequests(data, mappedData, apiVersion) {
             accessToken: destination.accessToken
           }
         : undefined;
-    const requestUrl = generateRequestUrl(data, config, apiVersion);
+    const requestUrl = generateRequestUrl(data, config);
 
     // Not part of the Meta API spec. Only used for Stape Connection.
     if (data.authFlow === 'stape') {
       if (data.audienceAction === 'ingest' || data.audienceAction === 'remove') {
-        mappedData.audienceIds = destination.audienceIds;
+        mappedDataForDestination.audienceIds = destination.audienceIds;
       } else if (data.audienceAction === 'removeFromAll') {
-        mappedData.adAccountIds = destination.adAccountIds;
+        mappedDataForDestination.adAccountIds = destination.adAccountIds;
       }
     }
 
@@ -975,7 +1066,7 @@ function sendRequests(data, mappedData, apiVersion) {
       EventName: data.audienceAction,
       RequestMethod: requestOptions.method,
       RequestUrl: requestUrl,
-      RequestBody: mappedData
+      RequestBody: mappedDataForDestination
     });
 
     let message = '';
@@ -984,7 +1075,7 @@ function sendRequests(data, mappedData, apiVersion) {
     if (audienceIds) message = ' Audience ID(s): ' + audienceIds;
     else if (adAccountIds) message = ' Ad Account ID(s): ' + adAccountIds;
 
-    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedData))
+    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedDataForDestination))
       .then((result) => {
         log({
           Name: 'MetaCustomAudiences',
@@ -1047,7 +1138,8 @@ function shouldExitEarly(data, eventData) {
 }
 
 function enc(data) {
-  return encodeUriComponent(makeString(data || ''));
+  if (['null', 'undefined'].indexOf(getType(data)) !== -1) data = '';
+  return encodeUriComponent(makeString(data));
 }
 
 function parseSchemaInput(input) {
@@ -1055,8 +1147,7 @@ function parseSchemaInput(input) {
   if (!isValidValue(input)) return;
   else if (type === 'array') return input.filter((e) => e);
   else if (type === 'string') {
-    const split = input.split(',');
-    return split.length === 1 ? input : split;
+    return input.split(',');
   }
 }
 
@@ -1119,7 +1210,7 @@ function normalizeBasedOnSchemaKey(schemaKey, identifier) {
 
 function isValidValue(value) {
   const valueType = getType(value);
-  return valueType !== 'null' && valueType !== 'undefined' && value !== '';
+  return valueType !== 'null' && valueType !== 'undefined' && value !== '' && value === value;
 }
 
 function isUIFieldTrue(field) {
@@ -1517,8 +1608,8 @@ ___SERVER_PERMISSIONS___
 ___TESTS___
 
 scenarios:
-- name: '[Single User] Should NOT send request if Audience Schema or Audience Members
-    list is empty'
+- name: '[Validation - Single User] Should NOT send request if Audience Schema or
+    Audience Members list is empty'
   code: |-
     const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
       userMode: 'single',
@@ -1532,55 +1623,115 @@ scenarios:
     assertApi('sendHttpRequest').wasNotCalled();
     assertApi('gtmOnSuccess').wasNotCalled();
     assertApi('gtmOnFailure').wasCalled();
-- name: '[Multiple Users] Should NOT send request if Audience Schema list is empty'
+- name: '[Validation - Lookalike] Lookalike Value cannot be the only identifier in
+    the schema'
   code: |-
-    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
-      userMode: 'multiple',
-      multipleUsersSchema: [],
-      singleUserIdentifiersList: undefined,
-      enableDataProcessingOptions: undefined,
-      singleUserDataProcessingOptionsList: undefined
+    [
+      {
+        userMode: 'single',
+        singleUserIdentifiersList: [{name: 'LOOKALIKE_VALUE', value: '5.0'}],
+        multipleUsersSchema: undefined,
+        multipleUsersAudienceMembers: undefined,
+        enableDataProcessingOptions: false,
+        singleUserDataProcessingOptionsList: undefined
+      },
+      {
+        userMode: 'multiple',
+        multipleUsersSchema: ['LOOKALIKE_VALUE'],
+        multipleUsersAudienceMembers: [['5.0'], ['3.0']],
+        singleUserIdentifiersList: undefined,
+        enableDataProcessingOptions: undefined,
+        singleUserDataProcessingOptionsList: undefined
+      }
+    ].forEach((overrides) => {
+      const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', overrides);
+
+      runCode(copyMockData);
+
+      assertApi('sendHttpRequest').wasNotCalled();
+      assertApi('gtmOnSuccess').wasNotCalled();
+      assertApi('gtmOnFailure').wasCalled();
     });
-
-    runCode(copyMockData);
-
-    assertApi('sendHttpRequest').wasNotCalled();
-    assertApi('gtmOnSuccess').wasNotCalled();
-    assertApi('gtmOnFailure').wasCalled();
-- name: '[Multiple Users] Should NOT send request if Audience Members list is empty'
+- name: '[Validation - Lookalike] Value-based audience fails when Lookalike Value
+    is not in the schema'
   code: |-
-    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
-      userMode: 'multiple',
-      multipleUsersAudienceMembers: [],
-      singleUserIdentifiersList: undefined,
-      enableDataProcessingOptions: undefined,
-      singleUserDataProcessingOptionsList: undefined
+    [
+      {authMethod: 'own', audienceListKey: 'ownAuthAudiencesList'},
+      {authMethod: 'stape', audienceListKey: 'stapeAuthAudiencesList'}
+    ].forEach((scenario) => {
+      const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', scenario.authMethod, {
+        userMode: 'single'
+      });
+
+      copyMockData[scenario.audienceListKey][0].isValueBased = true;
+
+      runCode(copyMockData);
+
+      assertApi('sendHttpRequest').wasNotCalled();
+      assertApi('gtmOnSuccess').wasNotCalled();
+      assertApi('gtmOnFailure').wasCalled();
     });
-
-    runCode(copyMockData);
-
-    assertApi('sendHttpRequest').wasNotCalled();
-    assertApi('gtmOnSuccess').wasNotCalled();
-    assertApi('gtmOnFailure').wasCalled();
-- name: '[Multiple Users] Should NOT send request if Audience Members list length
-    is greater than 10000'
+- name: '[Validation - Lookalike] Value-based ingest and remove fail when Lookalike
+    Value is not a valid number'
   code: |-
-    const audienceMembers = ['bar'];
-    audienceMembers.length = 10001;
+    ['ingest', 'remove'].forEach((action) => {
+      const copyMockData = setMockDataByAudienceMethodAndAuthType(action, 'own', {
+        userMode: 'single',
+        singleUserIdentifiersList: [
+          {name: 'EMAIL', value: 'test'},
+          {name: 'LOOKALIKE_VALUE', value: 'not-a-number'}
+        ],
+        enableDataProcessingOptions: false,
+        singleUserDataProcessingOptionsList: undefined
+      });
 
-    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
-      userMode: 'multiple',
-      multipleUsersAudienceMembers: audienceMembers,
-      singleUserIdentifiersList: undefined,
-      enableDataProcessingOptions: undefined,
-      singleUserDataProcessingOptionsList: undefined
+      copyMockData.ownAuthAudiencesList[0].isValueBased = true;
+
+      runCode(copyMockData);
+
+      assertApi('sendHttpRequest').wasNotCalled();
+      assertApi('gtmOnSuccess').wasNotCalled();
+      assertApi('gtmOnFailure').wasCalled();
     });
+- name: '[Validation - Multiple Users] Should NOT send request when schema is empty,
+    members list is empty, or members list exceeds 10000'
+  code: |-
+    const oversizedMembers = ['bar'];
+    oversizedMembers.length = 10001;
 
-    runCode(copyMockData);
+    [
+      {
+        description: 'schema list is empty',
+        overrides: {
+          multipleUsersSchema: []
+        }
+      },
+      {
+        description: 'audience members list is empty',
+        overrides: {
+          multipleUsersAudienceMembers: []
+        }
+      },
+      {
+        description: 'audience members list length exceeds 10000',
+        overrides: {
+          multipleUsersAudienceMembers: oversizedMembers
+        }
+      }
+    ].forEach((scenario) => {
+      const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', assign({
+        userMode: 'multiple',
+        singleUserIdentifiersList: undefined,
+        enableDataProcessingOptions: undefined,
+        singleUserDataProcessingOptionsList: undefined
+      }, scenario.overrides));
 
-    assertApi('sendHttpRequest').wasNotCalled();
-    assertApi('gtmOnSuccess').wasNotCalled();
-    assertApi('gtmOnFailure').wasCalled();
+      runCode(copyMockData);
+
+      assertApi('sendHttpRequest').wasNotCalled();
+      assertApi('gtmOnSuccess').wasNotCalled();
+      assertApi('gtmOnFailure').wasCalled();
+    });
 - name: '[Single User - All Auth Types and All Methods] Request URL, Request Options
     and Request Body are succesfully built and sent'
   code: "[\n  {\n    authMethod: 'own',\n    eventType: 'ingest',\n    mock: (copyMockData)\
@@ -1674,7 +1825,7 @@ scenarios:
     \ ['test', 'test'],\n  singleUserIdentifiersList: undefined,\n  enableDataProcessingOptions:\
     \ undefined,\n  singleUserDataProcessingOptionsList: undefined\n});\n\nmock('sendHttpRequest',\
     \ (requestUrl, requestOptions, requestBody) => {\n  const parsedRequestBody =\
-    \ JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo('EMAIL');\n\
+    \ JSON.parse(requestBody);\n  assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL']);\n\
     \n  return Promise.create((resolve, reject) => {\n    resolve({ statusCode: 200\
     \ });\n  });  \n});\n\nrunCode(copyMockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasCalled();\n\
     \  assertApi('gtmOnFailure').wasNotCalled();\n});"
@@ -1699,6 +1850,128 @@ scenarios:
     \ statusCode: 200 });\n  });  \n});\n\nrunCode(copyMockData);\n\ncallLater(()\
     \ => {\n  assertApi('gtmOnSuccess').wasCalled();\n  assertApi('gtmOnFailure').wasNotCalled();\n\
     });"
+- name: '[Lookalike Value - Own Auth] Not hashed for value-based audience, excluded
+    for non-value-based'
+  code: |-
+    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
+      userMode: 'single',
+      singleUserIdentifiersList: [
+        {name: 'EMAIL', value: 'test'},
+        {name: 'LOOKALIKE_VALUE', value: '5.0'}
+      ],
+      enableDataProcessingOptions: false,
+      singleUserDataProcessingOptionsList: undefined
+    });
+
+    copyMockData.ownAuthAudiencesList = [
+      {audienceId: 'nonValueBasedAudienceId', accessToken: 'tok1', isValueBased: false},
+      {audienceId: 'valueBasedAudienceId', accessToken: 'tok2', isValueBased: true}
+    ];
+
+    let requestCount = 0;
+    mock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => {
+      const parsedRequestBody = JSON.parse(requestBody);
+
+      if (requestCount === 0) {
+        assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL']);
+      } else if (requestCount === 1) {
+        assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL', 'LOOKALIKE_VALUE']);
+        assertThat(parsedRequestBody.payload.data[0][1]).isEqualTo('5.0');
+      }
+
+      requestCount++;
+
+      return Promise.create((resolve) => {
+        resolve({statusCode: 200});
+      });
+    });
+
+    runCode(copyMockData);
+
+    callLater(() => {
+      assertApi('sendHttpRequest').wasCalled();
+      assertApi('gtmOnSuccess').wasCalled();
+      assertApi('gtmOnFailure').wasNotCalled();
+    });
+- name: '[Lookalike Value - Stape Auth] Audiences grouped by isValueBased flag, each
+    gets correct payload'
+  code: |-
+    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'stape', {
+      userMode: 'single',
+      singleUserIdentifiersList: [
+        {name: 'EMAIL', value: 'test'},
+        {name: 'LOOKALIKE_VALUE', value: '5.0'}
+      ],
+      enableDataProcessingOptions: false,
+      singleUserDataProcessingOptionsList: undefined
+    });
+
+    copyMockData.stapeAuthAudiencesList = [
+      {audienceId: 'nonValueBasedAudienceId', isValueBased: false},
+      {audienceId: 'valueBasedAudienceId', isValueBased: true}
+    ];
+
+    let requestCount = 0;
+    mock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => {
+      const parsedRequestBody = JSON.parse(requestBody);
+
+      if (requestCount === 0) {
+        assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL']);
+        assertThat(parsedRequestBody.audienceIds).isEqualTo(['nonValueBasedAudienceId']);
+      } else if (requestCount === 1) {
+        assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL', 'LOOKALIKE_VALUE']);
+        assertThat(parsedRequestBody.payload.data[0][1]).isEqualTo('5.0');
+        assertThat(parsedRequestBody.audienceIds).isEqualTo(['valueBasedAudienceId']);
+      }
+
+      requestCount++;
+
+      return Promise.create((resolve) => {
+        resolve({statusCode: 200});
+      });
+    });
+
+    runCode(copyMockData);
+
+    callLater(() => {
+      assertApi('sendHttpRequest').wasCalled();
+      assertApi('gtmOnSuccess').wasCalled();
+      assertApi('gtmOnFailure').wasNotCalled();
+    });
+- name: '[Lookalike Value - removeFromAll] LOOKALIKE_VALUE is silently dropped from
+    the payload'
+  code: |-
+    ['own', 'stape'].forEach((authMethod) => {
+      const copyMockData = setMockDataByAudienceMethodAndAuthType('removeFromAll', authMethod, {
+        userMode: 'single',
+        singleUserIdentifiersList: [
+          {name: 'EMAIL', value: 'test'},
+          {name: 'LOOKALIKE_VALUE', value: '5.0'}
+        ],
+        enableDataProcessingOptions: false,
+        singleUserDataProcessingOptionsList: undefined
+      });
+
+      mock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => {
+        const parsedRequestBody = JSON.parse(requestBody);
+        assertThat(parsedRequestBody.payload.schema).isEqualTo(['EMAIL']);
+        assertThat(parsedRequestBody.payload.data[0]).isEqualTo(
+          ['9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08']
+        );
+
+        return Promise.create((resolve) => {
+          resolve({statusCode: 200});
+        });
+      });
+
+      runCode(copyMockData);
+
+      callLater(() => {
+        assertApi('sendHttpRequest').wasCalled();
+        assertApi('gtmOnSuccess').wasCalled();
+        assertApi('gtmOnFailure').wasNotCalled();
+      });
+    });
 - name: gtmOnFailure handler is called if some request fails with status code
   code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
     \ {\n  userMode: 'single'\n});\n\ncopyMockData.ownAuthAudiencesList.push({\n \
@@ -1860,5 +2133,12 @@ setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\ncons
 
 ___NOTES___
 
-Created on 7/17/2025, 5:44:02 PM
+2026-05-12 - Change Notes:
+  - Add Value-based Lookalike Audience support: `isValueBased` flag per audience row routes `LOOKALIKE_VALUE` only to value-based audiences; stripped from non-value-based payloads
+  - For Stape auth, group destinations by `isValueBased` before sending so each group gets the correct payload
+  - Add validation for Lookalike: blocks `LOOKALIKE_VALUE` as sole schema identifier, and value-based audiences with missing or non-numeric Lookalike Value
+  - Fix `enc()` to safely handle `null`/`undefined` without coercing to literal strings
+  - Fix `parseSchemaInput` to always return an array for comma-separated strings
+  - Fix `isValidValue` to reject `NaN`
 
+Created on 7/17/2025, 5:44:02 PM

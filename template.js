@@ -8,6 +8,7 @@ const getType = require('getType');
 const JSON = require('JSON');
 const logToConsole = require('logToConsole');
 const makeInteger = require('makeInteger');
+const makeNumber = require('makeNumber');
 const makeString = require('makeString');
 const Promise = require('Promise');
 const Object = require('Object');
@@ -19,28 +20,29 @@ const sha256Sync = require('sha256Sync');
 
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
-const apiVersion = '25.0';
+const API_VERSION = '25.0';
 
 if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
 }
 
 const mappedData = getDataForAudienceDataUpload(data);
+const destinations = getDestinations(data);
 
-const invalidFields = validateMappedData(mappedData);
+const invalidFields = validateMappedData(data, destinations, mappedData);
 if (invalidFields) {
   log({
     Name: 'MetaCustomAudiences',
     Type: 'Message',
     EventName: data.audienceAction,
-    Message: 'Request was not sent.',
+    Message: '🛑 [ERROR] Request was not sent.',
     Reason: invalidFields
   });
 
   return data.gtmOnFailure();
 }
 
-sendRequests(data, mappedData, apiVersion);
+sendRequests(data, destinations, mappedData);
 
 if (useOptimisticScenario) {
   return data.gtmOnSuccess();
@@ -106,7 +108,8 @@ function hashDataIfNeeded(mappedData) {
     DATA_PROCESSING_OPTIONS: true,
     DATA_PROCESSING_OPTIONS_COUNTRY: true,
     DATA_PROCESSING_OPTIONS_STATE: true,
-    MADID: true
+    MADID: true,
+    LOOKALIKE_VALUE: true
   };
   const processIdentifier = (schema, identifier, index, identifiersArray) => {
     if (noHashIdentifiers[schema]) return;
@@ -150,7 +153,7 @@ function getDataForAudienceDataUpload(data) {
   return mappedData;
 }
 
-function validateMappedData(mappedData) {
+function validateMappedData(data, destinations, mappedData) {
   if (!mappedData.payload.schema || mappedData.payload.schema.length === 0) {
     return 'The Audience Members Identifiers Schema must be specified.';
   }
@@ -168,35 +171,67 @@ function validateMappedData(mappedData) {
       mappedData.payload.data.length
     );
   }
+
+  const lookalikeValueIndex = mappedData.payload.schema.indexOf('LOOKALIKE_VALUE');
+  const lookalikeValueInSchema = lookalikeValueIndex !== -1;
+
+  const lookalikeIsTheOnlyIdentifier =
+    lookalikeValueInSchema && mappedData.payload.schema.length === 1;
+  if (lookalikeIsTheOnlyIdentifier) {
+    return 'Lookalike Value cannot be the only identifier in the schema.';
+  }
+
+  const action = data.audienceAction;
+  if (action === 'ingest' || action === 'remove') {
+    const someAudienceIsValueBased = destinations.some((destination) => destination.isValueBased);
+
+    if (someAudienceIsValueBased) {
+      const lookalikeValueIsInvalid = mappedData.payload.data.some((audienceMember) => {
+        const lookalikeValue = makeNumber(audienceMember[lookalikeValueIndex]);
+        return !isValidValue(lookalikeValue);
+      });
+      if (!lookalikeValueInSchema || lookalikeValueIsInvalid) {
+        return 'Some Audience is Lookalike but the Lookalike Value is invalid.';
+      }
+    }
+  }
 }
 
 function getDestinations(data) {
   const ownAuthFlow = data.authFlow === 'own';
   const action = data.audienceAction;
   if (action === 'ingest' || action === 'remove') {
-    return ownAuthFlow
-      ? data.ownAuthAudiencesList
-      : [
-          {
-            audienceIds: data.stapeAuthAudiencesList.map((audience) => {
-              return makeString(audience.audienceId);
-            })
-          }
-        ];
+    return ownAuthFlow ? data.ownAuthAudiencesList : data.stapeAuthAudiencesList;
   } else if (action === 'removeFromAll') {
-    return ownAuthFlow
-      ? data.ownAuthAdAccountsList
-      : [
-          {
-            adAccountIds: data.stapeAuthAdAccountsList.map((adAccount) => {
-              return makeString(adAccount.adAccountId);
-            })
-          }
-        ];
+    return ownAuthFlow ? data.ownAuthAdAccountsList : data.stapeAuthAdAccountsList;
   }
 }
 
-function generateRequestUrl(data, config, apiVersion) {
+function transformDestinationsForStapeAuthFlow(data, destinations) {
+  const action = data.audienceAction;
+  if (action === 'ingest' || action === 'remove') {
+    const transformedDestinations = destinations.reduce((acc, curr) => {
+      const position = curr.isValueBased ? 1 : 0;
+      acc[position] = acc[position] || {
+        isValueBased: curr.isValueBased ? true : false,
+        audienceIds: []
+      };
+      acc[position].audienceIds.push(makeString(curr.audienceId));
+      return acc;
+    }, {});
+    return Object.values(transformedDestinations);
+  } else if (action === 'removeFromAll') {
+    return [
+      {
+        adAccountIds: destinations.map((adAccount) => {
+          return makeString(adAccount.adAccountId);
+        })
+      }
+    ];
+  }
+}
+
+function generateRequestUrl(data, config) {
   const getAudiencePathByActionAndAuthFlow = (data) => {
     const authFlow = data.authFlow;
     const action = data.audienceAction;
@@ -214,7 +249,7 @@ function generateRequestUrl(data, config, apiVersion) {
   };
 
   if (data.authFlow === 'own') {
-    const baseUrl = 'https://graph.facebook.com/v' + apiVersion;
+    const baseUrl = 'https://graph.facebook.com/v' + API_VERSION;
     const audiencePath = getAudiencePathByActionAndAuthFlow(data);
     const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
     return requestUrl;
@@ -237,7 +272,7 @@ function generateRequestUrl(data, config, apiVersion) {
   );
 }
 
-function generateRequestOptions(data, apiVersion) {
+function generateRequestOptions(data) {
   const requestMethodByActionAndAuthFlow = {
     ingest: { own: 'POST', stape: 'POST' },
     remove: { own: 'DELETE', stape: 'POST' },
@@ -253,18 +288,38 @@ function generateRequestOptions(data, apiVersion) {
   };
 
   if (data.authFlow === 'stape') {
-    options.headers['x-meta-api-version'] = apiVersion;
+    options.headers['x-meta-api-version'] = API_VERSION;
     options.timeout = 20000;
   }
 
   return options;
 }
 
-function sendRequests(data, mappedData, apiVersion) {
-  const destinations = getDestinations(data);
-  const requestOptions = generateRequestOptions(data, apiVersion);
+function sendRequests(data, destinations, mappedData) {
+  const requestOptions = generateRequestOptions(data);
+
+  if (data.authFlow === 'stape') {
+    destinations = transformDestinationsForStapeAuthFlow(data, destinations);
+  }
+
+  const someAudienceIsNotValueBased = destinations.some((destination) => !destination.isValueBased);
+  const lookalikeValueIndex = mappedData.payload.schema.indexOf('LOOKALIKE_VALUE');
+  const lookalikeValueInSchema = lookalikeValueIndex !== -1;
+  // Discard LOOKALIKE_VALUE from the payload for non-value-based audiences.
+  let mappedDataWithoutLookalikeValue;
+  if (someAudienceIsNotValueBased && lookalikeValueInSchema) {
+    mappedDataWithoutLookalikeValue = JSON.parse(JSON.stringify(mappedData));
+    mappedDataWithoutLookalikeValue.payload.schema.splice(lookalikeValueIndex, 1);
+    mappedDataWithoutLookalikeValue.payload.data.forEach((audienceMember) => {
+      audienceMember.splice(lookalikeValueIndex, 1);
+    });
+  }
 
   const requests = destinations.map((destination) => {
+    const mappedDataForDestination =
+      !destination.isValueBased && lookalikeValueInSchema
+        ? mappedDataWithoutLookalikeValue
+        : mappedData;
     const config =
       data.authFlow === 'own'
         ? {
@@ -273,14 +328,14 @@ function sendRequests(data, mappedData, apiVersion) {
             accessToken: destination.accessToken
           }
         : undefined;
-    const requestUrl = generateRequestUrl(data, config, apiVersion);
+    const requestUrl = generateRequestUrl(data, config);
 
     // Not part of the Meta API spec. Only used for Stape Connection.
     if (data.authFlow === 'stape') {
       if (data.audienceAction === 'ingest' || data.audienceAction === 'remove') {
-        mappedData.audienceIds = destination.audienceIds;
+        mappedDataForDestination.audienceIds = destination.audienceIds;
       } else if (data.audienceAction === 'removeFromAll') {
-        mappedData.adAccountIds = destination.adAccountIds;
+        mappedDataForDestination.adAccountIds = destination.adAccountIds;
       }
     }
 
@@ -290,7 +345,7 @@ function sendRequests(data, mappedData, apiVersion) {
       EventName: data.audienceAction,
       RequestMethod: requestOptions.method,
       RequestUrl: requestUrl,
-      RequestBody: mappedData
+      RequestBody: mappedDataForDestination
     });
 
     let message = '';
@@ -299,7 +354,7 @@ function sendRequests(data, mappedData, apiVersion) {
     if (audienceIds) message = ' Audience ID(s): ' + audienceIds;
     else if (adAccountIds) message = ' Ad Account ID(s): ' + adAccountIds;
 
-    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedData))
+    return sendHttpRequest(requestUrl, requestOptions, JSON.stringify(mappedDataForDestination))
       .then((result) => {
         log({
           Name: 'MetaCustomAudiences',
@@ -362,7 +417,8 @@ function shouldExitEarly(data, eventData) {
 }
 
 function enc(data) {
-  return encodeUriComponent(makeString(data || ''));
+  if (['null', 'undefined'].indexOf(getType(data)) !== -1) data = '';
+  return encodeUriComponent(makeString(data));
 }
 
 function parseSchemaInput(input) {
@@ -370,8 +426,7 @@ function parseSchemaInput(input) {
   if (!isValidValue(input)) return;
   else if (type === 'array') return input.filter((e) => e);
   else if (type === 'string') {
-    const split = input.split(',');
-    return split.length === 1 ? input : split;
+    return input.split(',');
   }
 }
 
@@ -434,7 +489,7 @@ function normalizeBasedOnSchemaKey(schemaKey, identifier) {
 
 function isValidValue(value) {
   const valueType = getType(value);
-  return valueType !== 'null' && valueType !== 'undefined' && value !== '';
+  return valueType !== 'null' && valueType !== 'undefined' && value !== '' && value === value;
 }
 
 function isUIFieldTrue(field) {

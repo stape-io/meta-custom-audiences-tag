@@ -25,7 +25,7 @@ This tag supports three primary actions:
 - **Action**: Choose the operation to perform.
 - **Authentication Type**: **Own Meta Credentials** or **Stape Meta Connection** (recommended).
   - **Access Token** (only if using **Own Meta Credentials**): A System User access token with the `ads_management` permission is required. This token must be associated with the Ad Account that owns the audience. You can find more details on how to generate on the [Generating a System User Access Token section](#generating-a-system-user-access-token-for-own-meta-credentials-authentication-method).
-- **Destination Audiences**: (For `Add`/`Remove` actions) A list of Audience IDs and, if using the **Own Meta Credentials** method, their corresponding **Access Tokens**.
+- **Destination Audiences**: (For `Add`/`Remove` actions) A list of Audience IDs and, if using the **Own Meta Credentials** method, their corresponding **Access Tokens**. Each audience entry also has a **Value-based Audience** checkbox — enable it if the audience was created as a value-based Customer List (see [Value-Based Lookalike Audiences](#value-based-lookalike-audiences)).
 - **Destination Ad Accounts**: (For `Remove from All` action) A list of Ad Account IDs and, if using the **Own Meta Credentials** method, their corresponding **Access Tokens**.
 
 
@@ -37,8 +37,9 @@ The tag can be configured to send data for a single user or for multiple users a
     - **Multiple Users**: Provide a pre-formatted array of audience members and a corresponding schema. A maximum of **10,000 audience members** can be submitted per request.
 
 - **User Identifiers (Single User)**:
-    - A list of key-value pairs for user data, such as `EMAIL`, `PHONE`, `FN` (First Name), `LN` (Last Name), `MADID` (Mobile Advertiser ID), etc.
-    - The tag automatically hashes most identifiers. The `MADID` (IDFA/GAID) is the exception and must **not** be hashed.
+    - A list of key-value pairs for user data, such as `EMAIL`, `PHONE`, `FN` (First Name), `LN` (Last Name), `MADID` (Mobile Advertiser ID), `LOOKALIKE_VALUE`, etc.
+    - The tag automatically hashes most identifiers. `MADID` (IDFA/GAID) and `LOOKALIKE_VALUE` are exceptions and must **not** be hashed.
+    - `LOOKALIKE_VALUE` is only forwarded to audiences marked as **Value-based**. Any `LOOKALIKE_VALUE` passed to non-value-based audiences is silently discarded by the tag.
     - If providing pre-hashed data, ensure it follows Meta's [normalization guidelines](https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/#hash).
 
 - **Audience Members (Multiple Users)**:
@@ -53,6 +54,25 @@ The tag can be configured to send data for a single user or for multiple users a
 - **Consent Settings**: Prevent the tag from firing unless the necessary ad storage consent is granted by the user.
 - **Logging**: Configure console and/or BigQuery logging for debugging and monitoring requests and responses.
 
+
+## Value-Based Lookalike Audiences
+
+Meta supports [value-based lookalike audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/value-based-lookalike-audiences), which allow you to reach people similar to your highest-value customers. To use this feature, you must pass a `LOOKALIKE_VALUE` identifier alongside the other user identifiers.
+
+### ⚠️ Important requirements
+<details>
+  <summary>Click to expand</summary>
+
+> - You must create a **new Customer List** audience in Meta Ads Manager specifically for receiving the `LOOKALIKE_VALUE`. When creating the audience, you must check the option to enable value-based lookalike support — this creates a different type of Customer List.
+> - An existing Customer List created **without** this checkbox enabled **cannot** be reused. Sending data with `LOOKALIKE_VALUE` to a non-value-based audience will result in an API error.
+> - Conversely, sending data **without** `LOOKALIKE_VALUE` to a value-based Customer List will also return an error.
+> - Once the value-based Customer List is populated, use it as the **seed audience** when creating a Lookalike Audience in Ads Manager.
+
+To configure the tag for value-based audiences:
+1. Mark each applicable audience as **Value-based** by enabling the **Value-based Audience** checkbox in the **Destination Audiences** list.
+2. Include `LOOKALIKE_VALUE` in your user identifiers (Single User mode) or schema (Multiple Users mode).
+3. The tag will automatically include `LOOKALIKE_VALUE` only for audiences flagged as value-based, and will strip it from non-value-based audiences in the same tag execution.
+</details>
 
 ## Generating a System User Access Token (for **Own Meta Credentials** authentication method)
 
@@ -133,6 +153,7 @@ A System User from one Business Manager (e.g., an Agency) cannot directly access
 - [About the Custom Audiences API](https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences)
 - [Custom Audiences API reference](https://developers.facebook.com/docs/marketing-api/reference/custom-audience/users/)
 - [Normalization Guidelines](https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/#hash)
+- [Value-Based Lookalike Audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/value-based-lookalike-audiences)
 
 ## Open Source
 
