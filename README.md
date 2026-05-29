@@ -52,7 +52,6 @@ The tag can be configured to send data for a single user or for multiple users a
 ### Advanced Options
 - **Use Optimistic Scenario**: If `true`, the tag fires `gtmOnSuccess()` immediately without waiting for a response from the API. This speeds up container response time but may hide downstream errors.
 - **Consent Settings**: Prevent the tag from firing unless the necessary ad storage consent is granted by the user.
-- **Logging**: Configure console and/or BigQuery logging for debugging and monitoring requests and responses.
 
 
 ## Value-Based Lookalike Audiences
