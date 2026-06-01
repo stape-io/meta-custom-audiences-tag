@@ -1,6 +1,8 @@
 homepage: 'https://stape.io/'
 documentation: 'https://github.com/stape-io/meta-custom-audiences-tag'
 versions:
+  - sha: 45f9d82f68a5c01115841b56854135fa8a06c716
+    changeNotes: Logging removal.
   - sha: 2f0f55291efeecef0fcb669e836701063fdfe857
     changeNotes: Added Value-Based Lookalike Audience support.
   - sha: b2671d619f1af9ea96484c232b0027449b9a75f3
