@@ -1,6 +1,8 @@
 homepage: 'https://stape.io/'
 documentation: 'https://github.com/stape-io/meta-custom-audiences-tag'
 versions:
+  - sha: 6cb5f609aed5c139dcddaf62e6a3f64b67e21871
+    changeNotes: Update to API v26 and access token in Authorization header.
   - sha: 45f9d82f68a5c01115841b56854135fa8a06c716
     changeNotes: Logging removal.
   - sha: 2f0f55291efeecef0fcb669e836701063fdfe857
