@@ -17,7 +17,7 @@ const sha256Sync = require('sha256Sync');
 
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
-const API_VERSION = '25.0';
+const API_VERSION = '26.0';
 
 if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
@@ -39,6 +39,7 @@ if (invalidFields) {
   return data.gtmOnFailure();
 }
 
+hashDataIfNeeded(mappedData);
 sendRequests(data, destinations, mappedData);
 
 if (useOptimisticScenario) {
@@ -145,7 +146,6 @@ function getDataForAudienceDataUpload(data) {
   };
 
   addAudienceMembersData(data, mappedData);
-  hashDataIfNeeded(mappedData);
 
   return mappedData;
 }
@@ -248,8 +248,7 @@ function generateRequestUrl(data, config) {
   if (data.authFlow === 'own') {
     const baseUrl = 'https://graph.facebook.com/v' + API_VERSION;
     const audiencePath = getAudiencePathByActionAndAuthFlow(data);
-    const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
-    return requestUrl;
+    return baseUrl + audiencePath;
   }
 
   const containerIdentifier = getRequestHeader('x-gtm-identifier');
@@ -269,7 +268,7 @@ function generateRequestUrl(data, config) {
   );
 }
 
-function generateRequestOptions(data) {
+function generateRequestOptions(data, config) {
   const requestMethodByActionAndAuthFlow = {
     ingest: { own: 'POST', stape: 'POST' },
     remove: { own: 'DELETE', stape: 'POST' },
@@ -284,7 +283,9 @@ function generateRequestOptions(data) {
     }
   };
 
-  if (data.authFlow === 'stape') {
+  if (data.authFlow === 'own') {
+    options.headers.Authorization = 'Bearer ' + config.accessToken;
+  } else if (data.authFlow === 'stape') {
     options.headers['x-meta-api-version'] = API_VERSION;
     options.timeout = 20000;
   }
@@ -293,8 +294,6 @@ function generateRequestOptions(data) {
 }
 
 function sendRequests(data, destinations, mappedData) {
-  const requestOptions = generateRequestOptions(data);
-
   if (data.authFlow === 'stape') {
     destinations = transformDestinationsForStapeAuthFlow(data, destinations);
   }
@@ -326,6 +325,7 @@ function sendRequests(data, destinations, mappedData) {
           }
         : undefined;
     const requestUrl = generateRequestUrl(data, config);
+    const requestOptions = generateRequestOptions(data, config);
 
     // Not part of the Meta API spec. Only used for Stape Connection.
     if (data.authFlow === 'stape') {
@@ -451,7 +451,8 @@ function normalizeBasedOnSchemaKey(schemaKey, identifier) {
 
 function isValidValue(value) {
   const valueType = getType(value);
-  return valueType !== 'null' && valueType !== 'undefined' && value !== '' && value === value;
+  if (valueType === 'null' || valueType === 'undefined' || value !== value) return false;
+  return value !== '' && value !== 'undefined' && value !== 'null';
 }
 
 function isUIFieldTrue(field) {

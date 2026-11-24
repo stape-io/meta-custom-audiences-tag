@@ -643,7 +643,7 @@ const sha256Sync = require('sha256Sync');
 
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
-const API_VERSION = '25.0';
+const API_VERSION = '26.0';
 
 if (shouldExitEarly(data, eventData)) {
   return data.gtmOnSuccess();
@@ -665,6 +665,7 @@ if (invalidFields) {
   return data.gtmOnFailure();
 }
 
+hashDataIfNeeded(mappedData);
 sendRequests(data, destinations, mappedData);
 
 if (useOptimisticScenario) {
@@ -771,7 +772,6 @@ function getDataForAudienceDataUpload(data) {
   };
 
   addAudienceMembersData(data, mappedData);
-  hashDataIfNeeded(mappedData);
 
   return mappedData;
 }
@@ -874,8 +874,7 @@ function generateRequestUrl(data, config) {
   if (data.authFlow === 'own') {
     const baseUrl = 'https://graph.facebook.com/v' + API_VERSION;
     const audiencePath = getAudiencePathByActionAndAuthFlow(data);
-    const requestUrl = baseUrl + audiencePath + '?access_token=' + enc(config.accessToken);
-    return requestUrl;
+    return baseUrl + audiencePath;
   }
 
   const containerIdentifier = getRequestHeader('x-gtm-identifier');
@@ -895,7 +894,7 @@ function generateRequestUrl(data, config) {
   );
 }
 
-function generateRequestOptions(data) {
+function generateRequestOptions(data, config) {
   const requestMethodByActionAndAuthFlow = {
     ingest: { own: 'POST', stape: 'POST' },
     remove: { own: 'DELETE', stape: 'POST' },
@@ -910,7 +909,9 @@ function generateRequestOptions(data) {
     }
   };
 
-  if (data.authFlow === 'stape') {
+  if (data.authFlow === 'own') {
+    options.headers.Authorization = 'Bearer ' + config.accessToken;
+  } else if (data.authFlow === 'stape') {
     options.headers['x-meta-api-version'] = API_VERSION;
     options.timeout = 20000;
   }
@@ -919,8 +920,6 @@ function generateRequestOptions(data) {
 }
 
 function sendRequests(data, destinations, mappedData) {
-  const requestOptions = generateRequestOptions(data);
-
   if (data.authFlow === 'stape') {
     destinations = transformDestinationsForStapeAuthFlow(data, destinations);
   }
@@ -952,6 +951,7 @@ function sendRequests(data, destinations, mappedData) {
           }
         : undefined;
     const requestUrl = generateRequestUrl(data, config);
+    const requestOptions = generateRequestOptions(data, config);
 
     // Not part of the Meta API spec. Only used for Stape Connection.
     if (data.authFlow === 'stape') {
@@ -1077,7 +1077,8 @@ function normalizeBasedOnSchemaKey(schemaKey, identifier) {
 
 function isValidValue(value) {
   const valueType = getType(value);
-  return valueType !== 'null' && valueType !== 'undefined' && value !== '' && value === value;
+  if (valueType === 'null' || valueType === 'undefined' || value !== value) return false;
+  return value !== '' && value !== 'undefined' && value !== 'null';
 }
 
 function isUIFieldTrue(field) {
@@ -1447,66 +1448,163 @@ scenarios:
     });
 - name: '[Single User - All Auth Types and All Methods] Request URL, Request Options
     and Request Body are succesfully built and sent'
-  code: "[\n  {\n    authMethod: 'own',\n    eventType: 'ingest',\n    mock: (copyMockData)\
-    \ => {\n      copyMockData.ownAuthAudiencesList.push({\n        audienceId: 'expectedAudienceId2',\n\
-    \        accessToken: 'expectedAccessToken2'\n      });\n    },\n    expected:\
-    \ {\n      getExpectedRequestUrl: (copyMockData, requestCount) => {\n        return\
-    \ 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION + '/' + copyMockData.ownAuthAudiencesList[requestCount].audienceId\
-    \ + '/users?access_token=' + copyMockData.ownAuthAudiencesList[requestCount].accessToken;\n\
-    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
-    \ { 'Content-Type': 'application/json' }\n      },\n      getRequestBody: () =>\
-    \ EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\n    }\n  },\n  {\n    authMethod:\
-    \ 'own',\n    eventType: 'remove',\n    mock: (copyMockData) => {\n      copyMockData.ownAuthAudiencesList.push({\n\
-    \        audienceId: 'expectedAudienceId2',\n        accessToken: 'expectedAccessToken2'\n\
-    \      });\n    },\n    expected: {\n      getExpectedRequestUrl: (copyMockData,\
-    \ requestCount) => {\n        return 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION\
-    \ + '/' + copyMockData.ownAuthAudiencesList[requestCount].audienceId + '/users?access_token='\
-    \ + copyMockData.ownAuthAudiencesList[requestCount].accessToken;\n      },\n \
-    \     requestOptions: {\n        method: 'DELETE',\n        headers: { 'Content-Type':\
-    \ 'application/json' }\n      },\n      getRequestBody: () => EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\n\
-    \    }\n  },\n  {\n    authMethod: 'own',\n    eventType: 'removeFromAll',\n \
-    \   mock: (copyMockData) => {\n      copyMockData.ownAuthAdAccountsList.push({\n\
-    \        adAccountId: 'expectedAdAccountId2',\n        accessToken: 'expectedAccessToken2'\n\
-    \      });\n    },\n    expected: {\n      getExpectedRequestUrl: (copyMockData,\
-    \ requestCount) => {\n        return 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION\
-    \ + '/act_' + copyMockData.ownAuthAdAccountsList[requestCount].adAccountId + '/usersofanyaudience?access_token='\
-    \ + copyMockData.ownAuthAdAccountsList[requestCount].accessToken;\n      },\n\
-    \      requestOptions: {\n        method: 'DELETE',\n        headers: { 'Content-Type':\
-    \ 'application/json' }\n      },\n      getRequestBody: () => EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\n\
-    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'ingest',\n    mock:\
-    \ (copyMockData) => {\n      copyMockData.stapeAuthAudiencesList.push({\n    \
-    \    audienceId: 'expectedAudienceId2'\n      });\n    },\n    expected: {\n \
-    \     getExpectedRequestUrl: () => {\n        return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/audiences/users-add';\n\
-    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
-    \ { \n          'Content-Type': 'application/json',\n          'x-meta-api-version':\
-    \ EXPECTED_META_API_VERSION\n        },\n        timeout: 20000\n      },\n  \
-    \    getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
-    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'remove',\n    mock:\
-    \ (copyMockData) => {\n      copyMockData.stapeAuthAudiencesList.push({\n    \
-    \    audienceId: 'expectedAudienceId2'\n      });\n    },\n    expected: {\n \
-    \     getExpectedRequestUrl: () => {\n        return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/audiences/users-remove';\n\
-    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
-    \ { \n          'Content-Type': 'application/json',\n          'x-meta-api-version':\
-    \ EXPECTED_META_API_VERSION\n        },\n        timeout: 20000\n      },\n  \
-    \    getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
-    \    }\n  },\n  {\n    authMethod: 'stape',\n    eventType: 'removeFromAll',\n\
-    \    mock: (copyMockData) => {\n      copyMockData.stapeAuthAdAccountsList.push({\n\
-    \        adAccountId: 'expectedAdAccountId2'\n      });\n    },\n    expected:\
-    \ {\n      getExpectedRequestUrl: () => {\n        return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/adaccounts/audiences-users-remove';\n\
-    \      },\n      requestOptions: {\n        method: 'POST',\n        headers:\
-    \ { \n          'Content-Type': 'application/json',\n          'x-meta-api-version':\
-    \ EXPECTED_META_API_VERSION\n        },\n        timeout: 20000\n      },\n  \
-    \    getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)\n\
-    \    }\n  }\n].forEach((scenario) => {\n  const copyMockData = setMockDataByAudienceMethodAndAuthType(scenario.eventType,\
-    \ scenario.authMethod, {\n    userMode: 'single'\n  });\n  \n  scenario.mock(copyMockData);\n\
-    \  \n  let requestCount = 0;\n  mock('sendHttpRequest', (requestUrl, requestOptions,\
-    \ requestBody) => {\n    assertThat(requestUrl).isEqualTo(scenario.expected.getExpectedRequestUrl(copyMockData,\
-    \ requestCount));\n  \n    assertThat(requestOptions).isEqualTo(scenario.expected.requestOptions);\n\
-    \    \n    const parsedRequestBody = JSON.parse(requestBody);\n    assertThat(parsedRequestBody).isEqualTo(scenario.expected.getRequestBody(copyMockData));\n\
-    \    \n    requestCount++;\n    \n    return Promise.create((resolve, reject)\
-    \ => {\n      resolve({ statusCode: 200 });\n    });  \n  });\n  \n  runCode(copyMockData);\n\
-    \n  callLater(() => {\n    assertApi('gtmOnSuccess').wasCalled();\n    assertApi('gtmOnFailure').wasNotCalled();\n\
-    \  });\n});"
+  code: |-
+    const getOwnAuthRequestOptions = (method, destinations, requestCount) => {
+      return {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + destinations[requestCount].accessToken
+        }
+      };
+    };
+
+    const getStapeAuthRequestOptions = () => {
+      return {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-meta-api-version': EXPECTED_META_API_VERSION
+        },
+        timeout: 20000
+      };
+    };
+
+    [
+      {
+        authMethod: 'own',
+        eventType: 'ingest',
+        mock: (copyMockData) => {
+          copyMockData.ownAuthAudiencesList.push({
+            audienceId: 'expectedAudienceId2',
+            accessToken: 'expectedAccessToken2'
+          });
+        },
+        expected: {
+          getExpectedRequestUrl: (copyMockData, requestCount) => {
+            return 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION + '/' + copyMockData.ownAuthAudiencesList[requestCount].audienceId + '/users';
+          },
+          getRequestOptions: (copyMockData, requestCount) =>
+            getOwnAuthRequestOptions('POST', copyMockData.ownAuthAudiencesList, requestCount),
+          getRequestBody: () => EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH
+        }
+      },
+      {
+        authMethod: 'own',
+        eventType: 'remove',
+        mock: (copyMockData) => {
+          copyMockData.ownAuthAudiencesList.push({
+            audienceId: 'expectedAudienceId2',
+            accessToken: 'expectedAccessToken2'
+          });
+        },
+        expected: {
+          getExpectedRequestUrl: (copyMockData, requestCount) => {
+            return 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION + '/' + copyMockData.ownAuthAudiencesList[requestCount].audienceId + '/users';
+          },
+          getRequestOptions: (copyMockData, requestCount) =>
+            getOwnAuthRequestOptions('DELETE', copyMockData.ownAuthAudiencesList, requestCount),
+          getRequestBody: () => EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH
+        }
+      },
+      {
+        authMethod: 'own',
+        eventType: 'removeFromAll',
+        mock: (copyMockData) => {
+          copyMockData.ownAuthAdAccountsList.push({
+            adAccountId: 'expectedAdAccountId2',
+            accessToken: 'expectedAccessToken2'
+          });
+        },
+        expected: {
+          getExpectedRequestUrl: (copyMockData, requestCount) => {
+            return 'https://graph.facebook.com/v' + EXPECTED_META_API_VERSION + '/act_' + copyMockData.ownAuthAdAccountsList[requestCount].adAccountId + '/usersofanyaudience';
+          },
+          getRequestOptions: (copyMockData, requestCount) =>
+            getOwnAuthRequestOptions('DELETE', copyMockData.ownAuthAdAccountsList, requestCount),
+          getRequestBody: () => EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH
+        }
+      },
+      {
+        authMethod: 'stape',
+        eventType: 'ingest',
+        mock: (copyMockData) => {
+          copyMockData.stapeAuthAudiencesList.push({
+            audienceId: 'expectedAudienceId2'
+          });
+        },
+        expected: {
+          getExpectedRequestUrl: () => {
+            return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/audiences/users-add';
+          },
+          getRequestOptions: getStapeAuthRequestOptions,
+          getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)
+        }
+      },
+      {
+        authMethod: 'stape',
+        eventType: 'remove',
+        mock: (copyMockData) => {
+          copyMockData.stapeAuthAudiencesList.push({
+            audienceId: 'expectedAudienceId2'
+          });
+        },
+        expected: {
+          getExpectedRequestUrl: () => {
+            return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/audiences/users-remove';
+          },
+          getRequestOptions: getStapeAuthRequestOptions,
+          getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)
+        }
+      },
+      {
+        authMethod: 'stape',
+        eventType: 'removeFromAll',
+        mock: (copyMockData) => {
+          copyMockData.stapeAuthAdAccountsList.push({
+            adAccountId: 'expectedAdAccountId2'
+          });
+        },
+        expected: {
+          getExpectedRequestUrl: () => {
+            return 'https://expectedXGtmIdentifier.expectedXGtmDefaultDomain/stape-api/expectedXGtmApiKey/v1/meta/adaccounts/audiences-users-remove';
+          },
+          getRequestOptions: getStapeAuthRequestOptions,
+          getRequestBody: (copyMockData) => GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH(copyMockData)
+        }
+      }
+    ].forEach((scenario) => {
+      const copyMockData = setMockDataByAudienceMethodAndAuthType(scenario.eventType, scenario.authMethod, {
+        userMode: 'single'
+      });
+
+      scenario.mock(copyMockData);
+
+      let requestCount = 0;
+      mock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => {
+        assertThat(requestUrl).isEqualTo(scenario.expected.getExpectedRequestUrl(copyMockData, requestCount));
+
+        assertThat(requestOptions).isEqualTo(scenario.expected.getRequestOptions(copyMockData, requestCount));
+
+        const parsedRequestBody = JSON.parse(requestBody);
+        assertThat(parsedRequestBody).isEqualTo(scenario.expected.getRequestBody(copyMockData));
+
+        requestCount++;
+
+        return Promise.create((resolve, reject) => {
+          resolve({ statusCode: 200 });
+        });
+      });
+
+      runCode(copyMockData);
+
+      callLater(() => {
+        // Stape Connection groups all audiences or ad accounts into a single request.
+        assertThat(requestCount).isEqualTo(scenario.authMethod === 'own' ? 2 : 1);
+        assertApi('gtmOnSuccess').wasCalled();
+        assertApi('gtmOnFailure').wasNotCalled();
+      });
+    });
 - name: '[Multiple Users - All Auth Types and All Methods] Request Body is successfully
     built and sent'
   code: "// There's no need to check the Request URL and Request Options because they\
@@ -1685,6 +1783,63 @@ scenarios:
         assertApi('gtmOnFailure').wasNotCalled();
       });
     });
+- name: '[Invalid Values - Single User] Data Processing Options with null, undefined
+    or empty string values are discarded'
+  code: |-
+    const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
+      userMode: 'single',
+      singleUserIdentifiersList: [{ name: 'EMAIL', value: 'test' }],
+      enableDataProcessingOptions: true,
+      singleUserDataProcessingOptionsList: [
+        { name: 'DATA_PROCESSING_OPTIONS_COUNTRY', value: '1' },
+        { name: 'DATA_PROCESSING_OPTIONS_STATE', value: 'undefined' },
+        { name: 'DATA_PROCESSING_OPTIONS_STATE', value: 'null' },
+        { name: 'DATA_PROCESSING_OPTIONS_STATE', value: '' }
+      ]
+    });
+
+    mock('sendHttpRequest', (requestUrl, requestOptions, requestBody) => {
+      const parsedRequestBody = JSON.parse(requestBody);
+      assertThat(parsedRequestBody.payload.schema).isEqualTo([
+        'EMAIL',
+        'DATA_PROCESSING_OPTIONS',
+        'DATA_PROCESSING_OPTIONS_COUNTRY'
+      ]);
+      assertThat(parsedRequestBody.payload.data).isEqualTo([
+        ['9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', ['LDU'], 1]
+      ]);
+
+      return Promise.create((resolve) => {
+        resolve({ statusCode: 200 });
+      });
+    });
+
+    runCode(copyMockData);
+
+    callLater(() => {
+      assertApi('sendHttpRequest').wasCalled();
+      assertApi('gtmOnSuccess').wasCalled();
+      assertApi('gtmOnFailure').wasNotCalled();
+    });
+
+- name: '[Invalid Values - Multiple Users] Schema set to a literal undefined or null
+    string is treated as missing'
+  code: |-
+    ['undefined', 'null'].forEach((invalidSchema) => {
+      const multipleUsersMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own', {
+        userMode: 'multiple',
+        multipleUsersSchema: invalidSchema,
+        singleUserIdentifiersList: undefined,
+        enableDataProcessingOptions: undefined,
+        singleUserDataProcessingOptionsList: undefined
+      });
+
+      runCode(multipleUsersMockData);
+    });
+
+    assertApi('sendHttpRequest').wasNotCalled();
+    assertApi('gtmOnSuccess').wasNotCalled();
+    assertApi('gtmOnFailure').wasCalled();
 - name: gtmOnFailure handler is called if some request fails with status code
   code: "const copyMockData = setMockDataByAudienceMethodAndAuthType('ingest', 'own',\
     \ {\n  userMode: 'single'\n});\n\ncopyMockData.ownAuthAudiencesList.push({\n \
@@ -1715,136 +1870,240 @@ scenarios:
     \ {\n  all: () => Promise.create((resolve, reject) => reject({ reason: 'failed'\
     \ }))\n});\n\nrunCode(copyMockData);\n\ncallLater(() => {\n  assertApi('gtmOnSuccess').wasNotCalled();\n\
     \  assertApi('gtmOnFailure').wasCalled();\n});"
-setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\nconst\
-  \ makeInteger = require('makeInteger');\nconst Object = require('Object');\nconst\
-  \ callLater = require('callLater');\n\nfunction assign() {\n  const target = arguments[0];\n\
-  \  for (let i = 1; i < arguments.length; i++) {\n    for (let key in arguments[i])\
-  \ {\n      target[key] = arguments[i][key];\n    }\n  }\n  return target;\n}\n\n\
-  const EXPECTED_META_API_VERSION = '25.0';\n\nconst EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\
-  \ = {\n  payload: {\n    schema: [\n      'DOBD',\n      'DOBM',\n      'DOBY',\n\
-  \      'CT',\n      'COUNTRY',\n      'EMAIL',\n      'EXTERN_ID',\n      'FN',\n\
-  \      'FI',\n      'GEN',\n      'LN',\n      'MADID',\n      'PHONE',\n      'ST',\n\
-  \      'ZIP',\n      'DATA_PROCESSING_OPTIONS',\n      'DATA_PROCESSING_OPTIONS_COUNTRY',\n\
-  \      'DATA_PROCESSING_OPTIONS_STATE'\n    ],\n    data: [\n      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
-  \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n \
-  \       '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n  \
-  \      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n   \
-  \     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n    \
-  \    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n     \
-  \   '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n      \
-  \  '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n       \
-  \ '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
-  \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n \
-  \       'test',\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
-  \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n \
-  \       '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n  \
-  \      ['LDU'],\n        1,\n        1000\n      ]\n    ]\n  }\n};\n\nconst GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH\
-  \ = (copyMockData) => {\n  const COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH\
-  \ = JSON.parse(JSON.stringify(EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH));\n  if\
-  \ (copyMockData.stapeAuthAdAccountsList) COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH.adAccountIds\
-  \ = copyMockData.stapeAuthAdAccountsList.map((adAccount) => adAccount.adAccountId\
-  \ + '');\n  else if (copyMockData.stapeAuthAudiencesList) COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH.audienceIds\
-  \ = copyMockData.stapeAuthAudiencesList.map((audience) => audience.audienceId +\
-  \ '');\n  \n  return COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH;\n};\n\nconst\
-  \ EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH = {\n  payload: {\n    schema: ['EMAIL',\
-  \ 'PHONE'],\n    data: [\n      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
-  \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'\n  \
-  \    ],\n      [\n        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',\n\
-  \        '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'\n  \
-  \    ]\n    ]\n  }\n};\n\nconst GET_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_STAPE_AUTH\
-  \ = (copyMockData) => {\n  const COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH\
-  \ = JSON.parse(JSON.stringify(EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH));\n\
-  \  if (copyMockData.stapeAuthAdAccountsList) COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH.adAccountIds\
-  \ = copyMockData.stapeAuthAdAccountsList.map((adAccount) => adAccount.adAccountId\
-  \ + '');\n  else if (copyMockData.stapeAuthAudiencesList) COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH.audienceIds\
-  \ = copyMockData.stapeAuthAudiencesList.map((audience) => audience.audienceId +\
-  \ '');\n  \n  return COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH;\n};\n\n\
-  const expectedBigQuerySettings = {\n  logBigQueryProjectId: 'logBigQueryProjectId',\n\
-  \  logBigQueryDatasetId: 'logBigQueryDatasetId',\n  logBigQueryTableId: 'logBigQueryTableId'\n\
-  };\n\nconst requiredConsoleKeys = ['Type', 'TraceId', 'Name'];\nconst requiredBqKeys\
-  \ = ['timestamp', 'type', 'trace_id', 'tag_name'];\nconst expectedBqOptions = {\
-  \ ignoreUnknownValues: true };\n\nconst mockData = {\n  logBigQueryProjectId: expectedBigQuerySettings.logBigQueryProjectId,\n\
-  \  logBigQueryDatasetId: expectedBigQuerySettings.logBigQueryDatasetId,\n  logBigQueryTableId:\
-  \ expectedBigQuerySettings.logBigQueryTableId\n};\n\nconst cleanup = () => {\n \
-  \ mock('getAllEventData', {});\n  mock('getCookieValues', []);\n};\n\nconst setMockDataByAudienceMethodAndAuthType\
-  \ = (eventType, authType, objToBeMerged) => {\n  const mockDataByAuthTypeAndEventType\
-  \ = {\n    stape: {\n      ingest: {\n        authFlow: 'stape',\n        audienceAction:\
-  \ 'ingest',\n        stapeAuthAudiencesList: [\n          {\n            audienceId:\
-  \ 'expectedAudienceId'\n          }\n        ]\n      },\n      remove: {\n    \
-  \    authFlow: 'stape',\n        audienceAction: 'remove',\n        stapeAuthAudiencesList:\
-  \ [\n          {\n            audienceId: 'expectedAudienceId'\n          }\n  \
-  \      ]\n      },\n      removeFromAll: {\n        authFlow: 'stape',\n       \
-  \ audienceAction: 'removeFromAll',\n        stapeAuthAdAccountsList: [\n       \
-  \   {\n            adAccountId: 'expectedAdAccountId'\n          }\n        ]\n\
-  \      }\n    },\n    own: {\n      ingest: {\n        authFlow: 'own',\n      \
-  \  audienceAction: 'ingest',\n        ownAuthAudiencesList: [\n          {\n   \
-  \         audienceId: 'expectedAudienceId',\n            accessToken:\n        \
-  \      'expectedAccessToken'\n          }\n        ]\n      },\n      remove: {\n\
-  \        authFlow: 'own',\n        audienceAction: 'remove',\n        ownAuthAudiencesList:\
-  \ [\n          {\n            audienceId: 'expectedAudienceId',\n            accessToken:\n\
-  \              'expectedAccessToken'\n          }\n        ]\n      },\n      removeFromAll:\
-  \ {\n        authFlow: 'own',\n        audienceAction: 'removeFromAll',\n      \
-  \  ownAuthAdAccountsList: [\n          {\n            adAccountId: 'expectedAdAccountId',\n\
-  \            accessToken: 'expectedAccessToken'\n          }\n        ]\n      }\n\
-  \    }\n  };\n  \n    \n  const baseMockData = {\n    useOptimisticScenario: false,\n\
-  \    userMode: 'single',\n    singleUserIdentifiersList: [\n      { name: 'DOBD',\
-  \ value: 'test' },\n      { name: 'DOBM', value: 'test' },\n      { name: 'DOBY',\
-  \ value: 'test' },\n      { name: 'CT', value: 'test' },\n      { name: 'COUNTRY',\
-  \ value: 'test' },\n      { name: 'EMAIL', value: 'test' },\n      { name: 'EXTERN_ID',\
-  \ value: 'test' },\n      { name: 'FN', value: 'test' },\n      { name: 'FI', value:\
-  \ 'test' },\n      { name: 'GEN', value: 'test' },\n      { name: 'LN', value: 'test'\
-  \ },\n      { name: 'MADID', value: 'test' },\n      { name: 'PHONE', value: 'test'\
-  \ },\n      { name: 'ST', value: 'test' },\n      { name: 'ZIP', value: 'test' }\n\
-  \    ],\n    enableDataProcessingOptions: true,\n    singleUserDataProcessingOptionsList:\
-  \ [\n      { name: 'DATA_PROCESSING_OPTIONS_COUNTRY', value: '1' },\n      { name:\
-  \ 'DATA_PROCESSING_OPTIONS_STATE', value: '1000' }\n    ],\n    \n    // Multiple\
-  \ Users. It won't be used by the single user case. It's here to make testing easier.\n\
-  \    multipleUsersSchema: ['EMAIL', 'PHONE'],\n    multipleUsersAudienceMembers:\
-  \ [['test', 'test'], ['test', 'test']],\n    \n    adStorageConsent: 'optional',\n\
-  \    logType: 'debug',\n    bigQueryLogType: 'no',\n  };\n  \n  return assign(JSON.parse(JSON.stringify(mockData)),\
-  \ mockDataByAuthTypeAndEventType[authType][eventType], baseMockData, objToBeMerged\
-  \ || {});\n};\n\nconst setGetAllEventData = (objToBeMerged) => {\n  mock('getAllEventData',\
-  \ assign({\n    'x-ga-protocol_version': '2',\n    'x-ga-measurement_id': 'G-123ABC',\n\
-  \    'x-ga-gtm_version': '45je55e1za200',\n    'x-ga-page_id': 1747422523211,\n\
-  \    'x-ga-gcd': '13l3l3l3l1l1',\n    'x-ga-npa': '0',\n    'x-ga-dma': '0',\n \
-  \   'x-ga-mp2-tag_exp':\n      '101509157~103116025~103130498~103130500~103136993~103136995~103200001~103207802~103211513~103233427~103252644~103252646~103263073~103301114~103301116',\n\
-  \    client_id: 'AUJctU7H7hBB/aMuhE4pKwGu5DWDdklg5abyyyn8i/I=.1747154479',\n   \
-  \ 'x-ga-ecid': '1294673677',\n    language: 'en-us',\n    screen_resolution: '1512x982',\n\
-  \    event_location: { country: 'BR', region: 'SP' },\n    event_id: '101509157~103116025~103130498',\n\
-  \    timestamp: 1748377016,\n    client_hints: {\n      architecture: 'arm',\n \
-  \     bitness: '64',\n      full_version_list: [\n        { brand: 'Chromium', version:\
-  \ '136.0.7103.93' },\n        { brand: 'Google Chrome', version: '136.0.7103.93'\
-  \ },\n        { brand: 'Not.A/Brand', version: '99.0.0.0' }\n      ],\n      mobile:\
-  \ false,\n      model: '',\n      platform: 'macOS',\n      platform_version: '15.2.0',\n\
-  \      wow64: false,\n      brands: [\n        { brand: 'Chromium', version: '136'\
-  \ },\n        { brand: 'Google Chrome', version: '136' },\n        { brand: 'Not.A/Brand',\
-  \ version: '99' }\n      ]\n    },\n    'x-ga-are': '1',\n    'x-ga-mp2-frm': '0',\n\
-  \    'x-ga-pscdl': 'noapi',\n    'x-ga-system_properties': { eu: [34], tu: 'BA',\
-  \ ss: '1', ee: true },\n    'x-sst-system_properties': {\n      etld: 'google.com.br',\n\
-  \      tft: '1747422523211',\n      lpc: '60493049',\n      navt: 'r',\n      ude:\
-  \ '0',\n      sw_exp: '1',\n      request_start_time_ms: 1747422524851\n    },\n\
-  \    'x-ga-request_count': 1,\n    ga_session_id: '1747422523',\n    ga_session_number:\
-  \ 3,\n    'x-ga-mp2-seg': '0',\n    page_location: 'https://example.com/?test=1i23i21j3',\n\
-  \    page_title: 'Example Domain',\n    event_name: 'page_view',\n    'x-ga-tfd':\
-  \ 5784,\n    ip_override: '2804:14d:c096:8dd6:311c:8c00:e6c:e33',\n    user_agent:\n\
-  \      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,\
-  \ like Gecko) Chrome/136.0.0.0 Safari/537.36',\n    value: 123.45,\n    currency:\
-  \ 'BRL',\n    user_data: {\n      email: { 0: 'test1@example.net', 1: 'test2@example.org'\
-  \ },\n      phone_number: '+55 (19) 99999-9999',\n      address: {\n        first_name:\
-  \ 'test',\n        last_name: 'test',\n        postal_code: '10001',\n        country:\
-  \ 'BR'\n      }\n    }\n  }, objToBeMerged || {}));\n};\n\nmock('sendHttpRequest',\
-  \ (requestUrl, callback, requestOptions, requestBody) => {\n  if (typeof callback\
-  \ === 'function') {\n    callback(200);\n  } else {\n    requestBody = requestOptions;\n\
-  \    requestOptions = callback;\n    return Promise.create((resolve, reject) =>\
-  \ {\n      resolve({ statusCode: 200 });\n    });  \n  }\n});\n\nmock('getRequestHeader',\
-  \ (header) => {\n  if (header === 'trace-id') return 'expectedTraceId';\n  else\
-  \ if (header === 'x-gtm-identifier') return 'expectedXGtmIdentifier';\n  else if\
-  \ (header === 'x-gtm-default-domain') return 'expectedXGtmDefaultDomain';\n  else\
-  \ if (header === 'x-gtm-api-key') return 'expectedXGtmApiKey';\n});\n\nmock('getTimestampMillis',\
-  \ 1747945830456);"
+setup: |-
+  const Promise = require('Promise');
+  const JSON = require('JSON');
+  const makeInteger = require('makeInteger');
+  const Object = require('Object');
+  const callLater = require('callLater');
+
+  function assign() {
+    const target = arguments[0];
+    for (let i = 1; i < arguments.length; i++) {
+      for (let key in arguments[i]) {
+        target[key] = arguments[i][key];
+      }
+    }
+    return target;
+  }
+
+  const EXPECTED_META_API_VERSION = '26.0';
+
+  const EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH = {
+    payload: {
+      schema: [
+        'DOBD',
+        'DOBM',
+        'DOBY',
+        'CT',
+        'COUNTRY',
+        'EMAIL',
+        'EXTERN_ID',
+        'FN',
+        'FI',
+        'GEN',
+        'LN',
+        'MADID',
+        'PHONE',
+        'ST',
+        'ZIP',
+        'DATA_PROCESSING_OPTIONS',
+        'DATA_PROCESSING_OPTIONS_COUNTRY',
+        'DATA_PROCESSING_OPTIONS_STATE'
+      ],
+      data: [
+        [
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          'test',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          ['LDU'],
+          1,
+          1000
+        ]
+      ]
+    }
+  };
+
+  const GET_EXPECTED_SINGLE_USER_REQUEST_BODY_STAPE_AUTH = (copyMockData) => {
+    const COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH = JSON.parse(JSON.stringify(EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH));
+    if (copyMockData.stapeAuthAdAccountsList) COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH.adAccountIds = copyMockData.stapeAuthAdAccountsList.map((adAccount) => adAccount.adAccountId + '');
+    else if (copyMockData.stapeAuthAudiencesList) COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH.audienceIds = copyMockData.stapeAuthAudiencesList.map((audience) => audience.audienceId + '');
+
+    return COPY_EXPECTED_SINGLE_USER_REQUEST_BODY_OWN_AUTH;
+  };
+
+  const EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH = {
+    payload: {
+      schema: ['EMAIL', 'PHONE'],
+      data: [
+        [
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
+        ],
+        [
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+          '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
+        ]
+      ]
+    }
+  };
+
+  const GET_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_STAPE_AUTH = (copyMockData) => {
+    const COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH = JSON.parse(JSON.stringify(EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH));
+    if (copyMockData.stapeAuthAdAccountsList) COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH.adAccountIds = copyMockData.stapeAuthAdAccountsList.map((adAccount) => adAccount.adAccountId + '');
+    else if (copyMockData.stapeAuthAudiencesList) COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH.audienceIds = copyMockData.stapeAuthAudiencesList.map((audience) => audience.audienceId + '');
+
+    return COPY_EXPECTED_MULTIPLE_USERS_REQUEST_BODY_OWN_AUTH;
+  };
+
+  const mockData = {};
+
+  const setMockDataByAudienceMethodAndAuthType = (eventType, authType, objToBeMerged) => {
+    const mockDataByAuthTypeAndEventType = {
+      stape: {
+        ingest: {
+          authFlow: 'stape',
+          audienceAction: 'ingest',
+          stapeAuthAudiencesList: [
+            {
+              audienceId: 'expectedAudienceId'
+            }
+          ]
+        },
+        remove: {
+          authFlow: 'stape',
+          audienceAction: 'remove',
+          stapeAuthAudiencesList: [
+            {
+              audienceId: 'expectedAudienceId'
+            }
+          ]
+        },
+        removeFromAll: {
+          authFlow: 'stape',
+          audienceAction: 'removeFromAll',
+          stapeAuthAdAccountsList: [
+            {
+              adAccountId: 'expectedAdAccountId'
+            }
+          ]
+        }
+      },
+      own: {
+        ingest: {
+          authFlow: 'own',
+          audienceAction: 'ingest',
+          ownAuthAudiencesList: [
+            {
+              audienceId: 'expectedAudienceId',
+              accessToken:
+                'expectedAccessToken'
+            }
+          ]
+        },
+        remove: {
+          authFlow: 'own',
+          audienceAction: 'remove',
+          ownAuthAudiencesList: [
+            {
+              audienceId: 'expectedAudienceId',
+              accessToken:
+                'expectedAccessToken'
+            }
+          ]
+        },
+        removeFromAll: {
+          authFlow: 'own',
+          audienceAction: 'removeFromAll',
+          ownAuthAdAccountsList: [
+            {
+              adAccountId: 'expectedAdAccountId',
+              accessToken: 'expectedAccessToken'
+            }
+          ]
+        }
+      }
+    };
+
+
+    const baseMockData = {
+      useOptimisticScenario: false,
+      userMode: 'single',
+      singleUserIdentifiersList: [
+        { name: 'DOBD', value: 'test' },
+        { name: 'DOBM', value: 'test' },
+        { name: 'DOBY', value: 'test' },
+        { name: 'CT', value: 'test' },
+        { name: 'COUNTRY', value: 'test' },
+        { name: 'EMAIL', value: 'test' },
+        { name: 'EXTERN_ID', value: 'test' },
+        { name: 'FN', value: 'test' },
+        { name: 'FI', value: 'test' },
+        { name: 'GEN', value: 'test' },
+        { name: 'LN', value: 'test' },
+        { name: 'MADID', value: 'test' },
+        { name: 'PHONE', value: 'test' },
+        { name: 'ST', value: 'test' },
+        { name: 'ZIP', value: 'test' }
+      ],
+      enableDataProcessingOptions: true,
+      singleUserDataProcessingOptionsList: [
+        { name: 'DATA_PROCESSING_OPTIONS_COUNTRY', value: '1' },
+        { name: 'DATA_PROCESSING_OPTIONS_STATE', value: '1000' }
+      ],
+
+      // Multiple Users. It won't be used by the single user case. It's here to make testing easier.
+      multipleUsersSchema: ['EMAIL', 'PHONE'],
+      multipleUsersAudienceMembers: [['test', 'test'], ['test', 'test']],
+
+      adStorageConsent: 'optional'
+    };
+
+    return assign(JSON.parse(JSON.stringify(mockData)), mockDataByAuthTypeAndEventType[authType][eventType], baseMockData, objToBeMerged || {});
+  };
+
+  mock('sendHttpRequest', (requestUrl, callback, requestOptions, requestBody) => {
+    if (typeof callback === 'function') {
+      callback(200);
+    } else {
+      requestBody = requestOptions;
+      requestOptions = callback;
+      return Promise.create((resolve, reject) => {
+        resolve({ statusCode: 200 });
+      });
+    }
+  });
+
+  mock('getRequestHeader', (header) => {
+    if (header === 'trace-id') return 'expectedTraceId';
+    else if (header === 'x-gtm-identifier') return 'expectedXGtmIdentifier';
+    else if (header === 'x-gtm-default-domain') return 'expectedXGtmDefaultDomain';
+    else if (header === 'x-gtm-api-key') return 'expectedXGtmApiKey';
+  });
+
+  mock('getTimestampMillis', 1747945830456);
 
 
 ___NOTES___
+
+2026-11-24 - Change Notes:
+  - Updated API to v26
+  - The access token for Own Meta Credentials is no longer sent in the request URL, so it doesn't leak into request logs, proxy logs or the server Preview's outgoing-request list; it now goes in the Authorization header of each audience/ad account request
+  - Aligned `isValidValue` with the Facebook tag, so literal "undefined" and "null" strings are also treated as empty (e.g. in Data Processing Options and the Multiple Users schema)
+  - Audience members are now validated before they are hashed, so a payload that gets rejected (e.g. more than 10,000 members) is no longer hashed first
+  - Added unit tests for invalid values and removed unused test setup code, keeping the template under the GTM template editor's ~150 KiB limit that otherwise stops tests from running
 
 2026-05-25 Change Notes:
  - Logging removal.
